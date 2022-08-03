@@ -14,16 +14,31 @@ $('#getAjax').on('click', function () {
   })
 })
 
+const newStores = [
+  {
+    name: 'new Rami Levi',
+    departments: [1, 7],
+  },
+  {
+    name: 'new IKEA',
+    departments: [2, 3, 5, 6],
+  },
+  {
+    name: 'new Zol Stock',
+    departments: [4, 8],
+  },
+]
+
 $('#postAjax').on('click', function () {
   console.log('request is sending now!')
 
   $.ajax({
     type: 'POST',
     url: 'http://localhost:3000/stores-timeout',
-    data: JSON.stringify(users),
+    data: JSON.stringify(newStores),
     contentType: 'application/json; charset=utf-8',
     success: function (data) {
-      addUsersToHtml(data)
+      addItemsToHTML(data)
     },
     error: function (err) {
       console.log(err)
