@@ -6,7 +6,6 @@ function getData() {
   ul.html('')
   const stores = []
   const departments = []
-  //   let storeData
   promisifyAjax('GET', 'http://localhost:3000/stores')
     .then(function (response) {
       const promises = []
