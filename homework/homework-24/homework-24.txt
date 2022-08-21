@@ -1,0 +1,23 @@
+1. encapsulation
+   abstraction 
+   inheritance 
+   polymorphism
+
+4. prototype עונה על עקרון inheritance 
+
+5. User.prototype
+   user1.__proto__
+   Object.getPrototypeOf(user1)
+   user1.constructor.prototype
+
+6. ברמת הinstance נגדיר proprrties  וmethods  שהם מיוחדים לכל מופע של האובייקט וברתמת הprototype נגדיר methods שלא משתנים בין מופעים ואחידים לכל Instance כך שאין צורך ליצור אותם בכל מופע
+
+7. null 
+1. (?) enumerable – ניתן לעבוד עלין באיטרציה
+configurable  - אם false לא ניתן למחוק או לשנות attribute למעט value 
+Writable  - ניתן לשנות את הProperty
+8.כן 
+9. לא
+
+
+
