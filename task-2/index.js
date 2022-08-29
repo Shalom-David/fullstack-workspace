@@ -15,6 +15,7 @@ async function getData() {
       `https://restcountries.com/v3.1/name/${countryInput.value}`
     )
     const countriesJsonRes = await countriesRes.json()
+    console.log(countriesJsonRes)
     countriesJsonRes.filter((country) => currencies.push(country.currencies))
     countriesJsonRes.filter((country) => regions.push(country.region))
     countriesJsonRes.filter((country) =>
@@ -69,7 +70,8 @@ async function getData() {
         </tr> 
         </table>`
     )
-    for (const currency of currencies) {
+    const filtered = currencies.filter((currency) => currency)
+    for (const currency of filtered) {
       for (const [key, value] of Object.entries(currency)) {
         currencyList.push(value.name)
       }
