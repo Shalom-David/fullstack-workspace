@@ -6,8 +6,8 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const insertId: number | null = await save(req.body)
     insertId
-      ? res.send(`meeting ${insertId} inserted`)
-      : res.send('nothing inserted')
+      ? res.send(`Meeting ${insertId} Added Successfuly`)
+      : res.send('Error: Please Fill Out All the Fields Appropriately')
   } catch (error) {
     console.log(error)
     res.status(500)
@@ -24,14 +24,4 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
   })
   
-  router.get('/', async (req: Request, res: Response) => {
-    try {
-      const meeting = await find()
-      meeting.length ? res.send(meeting) : res.sendStatus(404)
-    } catch (error) {
-      console.log(error)
-      res.status(500)
-    }
-  })
-
 export default router

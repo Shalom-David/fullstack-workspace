@@ -2,3 +2,9 @@
   text-align: center;
   font-weight: 'bold';
 }
+.react-datetime-picker__calendar--open,
+.react-datetime-picker__calendar--closed,
+.react-datetime-picker__clock--open,
+.react-datetime-picker__clock--closed {
+  position: absolute;
+}

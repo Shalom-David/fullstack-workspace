@@ -4,18 +4,19 @@ import { Card, Button } from 'react-bootstrap'
 
 function GetTeamMeetings() {
   const select = document.querySelector('#select')
-  const [id, setId] = useState(0)
+  const [id, setId] = useState()
   const [teams, setTeams] = useState([])
   const [meetings, setMeetings] = useState([])
-  const [errors, setErrors] = useState('')
+  const [reset, setReset] = useState(true)
+  const firstUpdate = useRef(true)
+
   useEffect(() => {
     async function fetchTeams() {
       try {
         const res = await axios.get('http://localhost:8080/teams')
-        setErrors('')
         setTeams(res.data)
       } catch (error) {
-        setErrors(error.message)
+        console.error(error.message)
         setTeams([])
       }
     }
@@ -24,14 +25,17 @@ function GetTeamMeetings() {
 
   useEffect(() => {
     async function fetchMeetings() {
+      if (firstUpdate.current) {
+        firstUpdate.current = false
+        return
+      }
       try {
         const res = await axios.get(`http://localhost:8080/meetings/${id}`)
-        setErrors('')
+
         setMeetings(res.data)
       } catch (error) {
-        setErrors(error.message)
+        console.error(error.message)
         setMeetings([])
-        console.error(errors)
       }
     }
     fetchMeetings()
@@ -51,8 +55,15 @@ function GetTeamMeetings() {
             </option>
           ))}
         </select>
-        <Button className="m-2" onClick={() => setId(0)} variant="danger">
-          reset
+        <Button
+          className="m-2"
+          onClick={() => {
+            setReset(false)
+          }}
+          type="submit"
+          variant="danger"
+        >
+          Reset
         </Button>
       </div>
       <Button
@@ -60,50 +71,65 @@ function GetTeamMeetings() {
         variant="success"
         onClick={() => {
           setId(select.value)
+          setReset(true)
         }}
+        type="submit"
       >
         Get Meeting Info
       </Button>
-      <div>
-        {meetings.map((meeting, index) => (
-          <Card
-            className="bg-light border-dark d-inline-block fw-bold"
-            style={{
-              width: '20vw',
-              margin: '10px',
-            }}
-            key={index}
-          >
-            <Card.Body>
-              <Card.Title className="border-dark border-bottom">
-                Team: {select[select.value - 1].innerText}
-              </Card.Title>
-              <Card.Text className="border-dark border-bottom">
-                Description: {meeting.description}
-              </Card.Text>
-              <Card.Text className="border-dark border-bottom">
-                Meeting Starts:{' '}
-                {meeting.start_time
-                  .toString()
-                  .split('T')
-                  .splice(0)
-                  .join(' ')
-                  .replace(/.000Z$/, '')}
-              </Card.Text>
-              <Card.Text className="border-dark border-bottom">
-                Meeting Ends:{' '}
-                {meeting.end_time
-                  .toString()
-                  .split('T')
-                  .splice(0)
-                  .join(' ')
-                  .replace(/.000Z$/, '')}
-              </Card.Text>
-              <Card.Text>Room: {meeting.room}</Card.Text>
-            </Card.Body>
-          </Card>
-        ))}
-      </div>
+      {reset && (
+        <div id="cardDiv">
+          {meetings.map((meeting, index) => (
+            <Card
+              className="bg-light border-dark d-inline-block fw-bold"
+              style={{
+                width: '20vw',
+                margin: '10px',
+              }}
+              key={index}
+            >
+              <Card.Body>
+                <Card.Title className="border-dark border-bottom">
+                  <Card.Text className="text-success text-decoration-underline">
+                    Team:
+                  </Card.Text>
+                  {select[select.value - 1].innerText}
+                </Card.Title>
+                <Card.Title className="border-dark border-bottom">
+                  <Card.Text className="text-success text-decoration-underline">
+                    Description:
+                  </Card.Text>
+                  {meeting.description}
+                </Card.Title>
+                <Card.Title className="border-dark border-bottom">
+                  <Card.Text className="text-success text-decoration-underline">
+                    Meeting Starts:
+                  </Card.Text>
+                  {new Date(meeting.start_time).toLocaleString()}
+                </Card.Title>
+                <Card.Title className="border-dark border-bottom">
+                  <Card.Text className="text-success text-decoration-underline ">
+                    Meeting Ends:
+                  </Card.Text>
+                  {new Date(meeting.end_time).toLocaleString()}
+                </Card.Title>
+                <Card.Title>
+                  <Card.Text className="text-success text-decoration-underline">
+                    Meeting Duration:
+                  </Card.Text>
+                  {meeting.duration}
+                </Card.Title>
+                <Card.Title>
+                  <Card.Text className="text-success text-decoration-underline">
+                    Room:
+                  </Card.Text>
+                  {meeting.room}
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

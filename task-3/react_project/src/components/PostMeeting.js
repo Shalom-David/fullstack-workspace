@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useRef,
-  useLayoutEffect,
-} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import DateTimePicker from 'react-datetime-picker'
@@ -14,11 +8,10 @@ function PostMeeting() {
   const [toggle, setToggle] = useToggle()
   const [dateTimeStartValue, setDateTimeStart] = useState(new Date())
   const [dateTimeEndValue, setDateTimeEnd] = useState(new Date())
-  const [team, setTeam] = useState()
+  const [teamName, setTeamName] = useState()
   const [teams, setTeams] = useState([])
   const [room, setRoom] = useState()
   const [description, setDescription] = useState()
-  const [errors, setErrors] = useState('')
   const [meetingData, setMeetingData] = useState({})
 
   const firstUpdate = useRef(true)
@@ -27,10 +20,9 @@ function PostMeeting() {
     async function fetchTeams() {
       try {
         const res = await axios.get('http://localhost:8080/teams')
-        setErrors('')
         setTeams(res.data)
       } catch (error) {
-        setErrors(error.message)
+        console.error(error.message)
         setTeams([])
       }
     }
@@ -38,22 +30,20 @@ function PostMeeting() {
   }, [])
 
   useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false
-      return
-    }
     async function postMeeting() {
+      if (firstUpdate.current) {
+        firstUpdate.current = false
+        return
+      }
       try {
         const res = await axios.post(
           'http://localhost:8080/meetings',
           meetingData
         )
         alert(res.data)
-        setErrors('')
       } catch (error) {
-        setErrors(error.message)
+        console.error(error.message)
         setTeams([])
-        console.error(errors)
       }
     }
     postMeeting()
@@ -61,18 +51,15 @@ function PostMeeting() {
 
   const getData = () => {
     const dataObj = {
-      team_name: team,
-      start_time: `${dateTimeStartValue.toISOString().split('T')[0]} ${
-        dateTimeStartValue.toString().split(' ')[4]
-      }`,
-      end_time: `${dateTimeEndValue.toISOString().split('T')[0]} ${
-        dateTimeEndValue.toString().split(' ')[4]
-      }`,
+      team_name: teamName,
+      start_time: `${dateTimeStartValue.getFullYear()}-${dateTimeStartValue.getMonth()}-${dateTimeStartValue.getDate()} ${dateTimeStartValue.toLocaleTimeString()}`,
+      end_time: `${dateTimeEndValue.getFullYear()}-${dateTimeEndValue.getMonth()}-${dateTimeEndValue.getDate()} ${dateTimeEndValue.toLocaleTimeString()}`,
       description: description,
       room: room,
     }
     setMeetingData(dataObj)
   }
+
   return (
     <div>
       <Button variant="warning" onClick={setToggle}>
@@ -87,7 +74,7 @@ function PostMeeting() {
                   <Form.Label>Select Team</Form.Label>
                   <Form.Select
                     onChange={(e) =>
-                      setTeam(e.target[e.target.selectedIndex].text)
+                      setTeamName(e.target[e.target.selectedIndex].text)
                     }
                     id="selectOption"
                   >

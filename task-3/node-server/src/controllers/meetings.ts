@@ -23,21 +23,3 @@ export const find = async (id?: string): Promise<any> => {
   const [meeting] = await MeetingModel.find(id)
   return meeting
 }
-
-// export const update = async (id: string, data: Customer): Promise<boolean> => {
-//   const { firstName, lastName, email, points } = data
-//   if (
-//     firstName === undefined &&
-//     lastName === undefined &&
-//     email === undefined &&
-//     points === undefined
-//   ) {
-//     return false
-//   }
-
-//   const customer = new customerModel(firstName, lastName, email, points)
-
-//   const [res] = await customer.update(id)
-
-//   return res.affectedRows ? true : false
-// }
