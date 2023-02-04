@@ -1,5 +1,6 @@
+import { genSalt, hash } from 'bcryptjs'
 import { CONSTANTS } from '../constants'
-import { User } from '../entity/User'
+import { Role, User } from '../entity/User'
 import { findVacations } from './vacations'
 
 export const createUser = async (record: User): Promise<User> => {
@@ -12,13 +13,13 @@ export const follow = async (data: any): Promise<User | string | Error> => {
     throw Error(CONSTANTS.ERRORS.MISSING_DATA_ERROR)
   }
   const { vacation: vacationId, id: userId } = data
+
   const [user] = await findUsers(userId)
   if (!user) {
     throw Error(CONSTANTS.ERRORS.NOT_FOUND_ERROR)
   }
 
   const vacation = await findVacations(vacationId)
-  console.log(vacation)
   if (!vacation.length) {
     throw Error(CONSTANTS.ERRORS.NOT_FOUND_ERROR)
   }
@@ -29,7 +30,8 @@ export const follow = async (data: any): Promise<User | string | Error> => {
     throw Error(CONSTANTS.ERRORS.FOLLOW_ERROR)
   }
   user.vacations.push(...vacation)
-  return await user.save()
+  await user.save()
+  return
 }
 
 export const unfollow = async (data: any): Promise<User | string> => {
@@ -49,7 +51,8 @@ export const unfollow = async (data: any): Promise<User | string> => {
     throw Error(CONSTANTS.ERRORS.UNFOLLOW_ERROR)
   }
   user.vacations.splice(index, 1)
-  return await user.save()
+  await user.save()
+  return
 }
 
 export const findUsers = async (userId?: number): Promise<User[]> => {
@@ -60,6 +63,14 @@ export const findUsers = async (userId?: number): Promise<User[]> => {
     },
   })
 }
+export const findUserByName = async (username?: string): Promise<User> => {
+  return await User.findOne({
+    where: {
+      username: username,
+    },
+    relations: ['vacations'],
+  })
+}
 
 export const updateUser = async (
   userId: number,
@@ -67,4 +78,24 @@ export const updateUser = async (
 ): Promise<boolean> => {
   const res = await User.update(userId, data)
   return res.affected ? true : false
+}
+
+export const createDefaultAdmin = async () => {
+  // ############## default admin ##############
+  // ############# username: admin #############
+  // ############# password: admin #############
+  const users: User[] = await findUsers()
+  const [userExists] = users.filter((user: User) => user.role === 'admin')
+  if (!userExists) {
+    const salt = await genSalt()
+    const hashed = await hash(CONSTANTS.ADMIN.PASSWORD, salt)
+    return await createUser({
+      firstName: CONSTANTS.ADMIN.FIRST_NAME,
+      lastName: CONSTANTS.ADMIN.LAST_NAME,
+      username: CONSTANTS.ADMIN.USERNAME,
+      password: hashed,
+      role: Role.ADMIN,
+    } as User)
+  }
+  return
 }

@@ -15,13 +15,12 @@ const checkFileType = (
   if (mimeType && extName) {
     return cb(null, true)
   }
-
   return cb(Error(CONSTANTS.ERRORS.MULTER_FILE_ERROR), false)
 }
 
 export const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10000000 },
+  limits: { fileSize: 1000000 },
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb)
   },
@@ -33,10 +32,15 @@ export const multerErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err.code === CONSTANTS.ERRORS.MULTER_FORM_ERROR) {
-    return res.status(400).send({ errors: err.message })
-  }
-  if (err.message === CONSTANTS.ERRORS.MULTER_FILE_ERROR) {
-    return res.status(400).send({ error: err.message })
+  switch (true) {
+    case err.code === CONSTANTS.ERRORS.MULTER_FORM_ERROR:
+      res.status(400).send({ errors: err.message })
+      break
+    case err.message === CONSTANTS.ERRORS.MULTER_FILE_ERROR:
+      res.status(400).send({ error: err.message })
+      break
+    case err.code === CONSTANTS.ERRORS.MULTER_FILE_SIZE_ERROR:
+      res.status(400).send({ error: err.message })
+      break
   }
 }

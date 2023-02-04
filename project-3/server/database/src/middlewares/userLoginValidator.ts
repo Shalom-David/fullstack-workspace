@@ -6,15 +6,17 @@ import { CONSTANTS } from '../constants'
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users: User[] = await findUsers()
-    const userExists = users.filter(
+    const [userExists] = users.filter(
       (user: User) =>
         (req.url === '/login' || req.url === '/login/') &&
         user.username === req.body.username
     )
 
     let isValidPassword: boolean
-    if (userExists.length) {
-      isValidPassword = await compare(req.body.password, userExists[0].password)
+    if (userExists) {
+      res.locals.userRole = userExists.role
+      res.locals.username = userExists.username
+      isValidPassword = await compare(req.body.password, userExists.password)
     }
     if (!isValidPassword) {
       if (req.url === '/login' || req.url === '/login/') {

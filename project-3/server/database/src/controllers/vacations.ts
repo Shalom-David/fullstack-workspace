@@ -1,4 +1,4 @@
-import { access, readdir, readFile, unlink, writeFile } from 'fs/promises'
+import { readdir, readFile, unlink, writeFile } from 'fs/promises'
 import { CONSTANTS } from '../constants'
 import { Vacation } from '../entity/Vacation'
 
@@ -18,14 +18,50 @@ export const createVacation = async (
 }
 
 export const findVacations = async (
-  vacationId?: number
+  vacationId?: number,
+  addImages?: boolean
 ): Promise<Vacation[]> => {
-  return await Vacation.find({
+  const vacations = await Vacation.find({
     ...(vacationId ? { where: { id: vacationId } } : {}),
     relations: {
       users: true,
     },
   })
+  if (addImages) {
+    const newVacations = []
+
+    for (const vacation of vacations) {
+      newVacations.push({
+        ...vacation,
+        image: await readFile(
+          `../images/${await fileMatcher(vacation.imgName)}`
+        ),
+      })
+    }
+    return newVacations
+  }
+  return vacations
+}
+
+export const findPaginatedVacations = async (
+  skip: number,
+  take: number
+): Promise<any> => {
+  const vacations = await Vacation.findAndCount({
+    relations: {
+      users: true,
+    },
+    skip: skip,
+    take: take,
+  })
+  const newVacations = []
+  for (const vacation of vacations[0]) {
+    newVacations.push({
+      ...vacation,
+      image: await readFile(`../images/${await fileMatcher(vacation.imgName)}`),
+    })
+  }
+  return [newVacations, vacations[1]]
 }
 
 export const updateVacation = async (
@@ -40,28 +76,41 @@ export const updateVacation = async (
     throw new Error(CONSTANTS.ERRORS.NOT_FOUND_ERROR)
   }
   if (file) {
-    const savedFiles = await readdir('../images')
-    const match = savedFiles.filter((savedFile) => {
-      return savedFile.includes(data.imgName)
-    })
-
-    if (match.length) {
-      await unlink(`../images/${match[0]}`)
+    const matchedFile: string = await fileMatcher(imgName)
+    console.log(imgName)
+    console.log('file?')
+    console.log(file)
+    console.log(matchedFile)
+    if (matchedFile) {
+      await unlink(`../images/${matchedFile}`)
       await writeFile(
         `../images/${timestamp}.${file.mimetype.split('/')[1]}`,
         file.buffer
       )
       imgName = timestamp.toString()
+      console.log('imgName2')
+      console.log(imgName)
     }
   }
   for (const prop in dataProps) {
     vacation[prop] = dataProps[prop]
   }
+  console.log('imgName1')
+  console.log(vacation.imgName)
   vacation.imgName = imgName
   return await vacation.save()
 }
 
 export const deleteVacation = async (vacationId: number): Promise<boolean> => {
+  const [vacation] = await findVacations(vacationId)
+  const matchedFile = await fileMatcher(vacation.imgName)
+  if (matchedFile) await unlink(`../images/${matchedFile}`)
   const res = await Vacation.delete(vacationId)
   return res.affected ? true : false
+}
+
+const fileMatcher = async (fileName: string) => {
+  const files = await readdir('../images')
+  const [matchedFile] = files.filter((file) => file.includes(fileName))
+  return matchedFile
 }

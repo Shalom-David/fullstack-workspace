@@ -5,14 +5,21 @@ import { AppDataSource } from './data-source'
 import vacations from './routers/adminAuth'
 import users from './routers/userAuth'
 import cors from 'cors'
-import { createAdmin } from './controllers/createDefaultAdmin'
+import { createDefaultAdmin } from './controllers/users'
 ;(async () => {
   try {
     await AppDataSource.initialize()
     console.log('successfully connected to database')
-    createAdmin()
+    createDefaultAdmin()
     const app: Application = express()
-    app.use(cors())
+    app.use(
+      cors({
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+      })
+    )
     app.use(express.urlencoded({ extended: true }))
     app.use(express.json())
 

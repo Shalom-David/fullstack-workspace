@@ -49,9 +49,7 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const isDeleted = await deleteVacation(+req.params.id)
-      isDeleted
-        ? res.send(`vacation ${req.params.id} removed`)
-        : res.send('nothing removed')
+      isDeleted ? res.send(req.params.id) : res.send('nothing removed')
     } catch (error) {
       console.error(error)
       res.sendStatus(500)
@@ -60,15 +58,18 @@ router.delete(
 )
 
 router.patch(
-  '/edit-vacation/:id',
-  [upload.single('image'), vacationDataValidator, jwtVerify, authenticateAdmin],
+  '/edit-vacation',
+  [
+    upload.single('image'),
+    multerErrorHandler,
+    vacationDataValidator,
+    jwtVerify,
+    authenticateAdmin,
+  ],
   async (req: Request, res: Response) => {
     try {
-      const responseData = await updateVacation(
-        +req.params.id,
-        req.file,
-        req.body
-      )
+      const { id } = req.query
+      const responseData = await updateVacation(+id, req.file, req.body)
       responseData === CONSTANTS.ERRORS.NOT_FOUND_ERROR
         ? res.sendStatus(404)
         : res.send(responseData)

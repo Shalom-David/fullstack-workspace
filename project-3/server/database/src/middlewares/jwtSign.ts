@@ -5,8 +5,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     if (!process.env.ACCESS_TOKEN_SECRET) {
       return res.sendStatus(500)
     }
+    let username: string
 
-    const { username } = req.body
+    res.locals.user
+      ? (username = res.locals.user.username)
+      : ({ username } = req.body)
+
     jwt.sign(
       { username },
       process.env.ACCESS_TOKEN_SECRET,
@@ -17,7 +21,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         if (err) {
           return res.sendStatus(500)
         }
-        console.log(accessToken)
+
         res.locals.accessToken = accessToken
         next()
       }

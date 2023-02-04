@@ -5,7 +5,7 @@ const registerFormValidator: ValidationChain[] = [
   body('lastName').notEmpty().withMessage('last name is required'),
   body('username').notEmpty().withMessage('username is required'),
   body('password').notEmpty().withMessage('pasword is required'),
-  body('role').isIn(['user', '']).withMessage('invalid role'),
+  body('role').isIn(['user', '', null]).withMessage('invalid role'),
 ]
 
 const vacationFormValidator: ValidationChain[] = [
@@ -14,7 +14,7 @@ const vacationFormValidator: ValidationChain[] = [
   body('startDate').notEmpty().isDate().withMessage('invalid date'),
   body('endDate').notEmpty().isDate().withMessage('invalid date'),
   body('price').isNumeric().withMessage('invalid price'),
-  body('currency').isNumeric().withMessage('invalid currency'),
+  body('currency').isNumeric().isIn([1, 2, 3]).withMessage('invalid currency'),
 ]
 
 export { registerFormValidator, vacationFormValidator }

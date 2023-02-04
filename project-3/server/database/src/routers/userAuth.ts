@@ -3,12 +3,13 @@ import { validationResult } from 'express-validator'
 import { CONSTANTS } from '../constants'
 import {
   createUser,
+  findUserByName,
   findUsers,
   follow,
   unfollow,
   updateUser,
 } from '../controllers/users'
-import { findVacations } from '../controllers/vacations'
+import { findPaginatedVacations, findVacations } from '../controllers/vacations'
 import { User } from '../entity/User'
 import authenticateUser from '../middlewares/authenticateUser'
 import { registerFormValidator } from '../middlewares/formValidator'
@@ -18,15 +19,20 @@ import passwordEncryptor from '../middlewares/passwordEncryptor'
 import passwordValidator from '../middlewares/passwordValidator'
 import userLoginValidator from '../middlewares/userLoginValidator'
 import userDataValidator from '../middlewares/userDataValidator'
+import { Vacation } from '../entity/Vacation'
 
 const router: Router = Router()
 
 router.get(
-  '/getUser/:id',
-  [jwtVerify, authenticateUser],
+  '/getUser',
+  [jwtVerify, authenticateUser, jwtSign],
   async (req: Request, res: Response) => {
     try {
-      const user = await findUsers(+req.params.id)
+      const { username } = req.query
+
+      const users = await findUsers()
+      const [user] = users.filter((user) => user.username === username)
+
       user ? res.send(user) : res.sendStatus(404)
     } catch (error) {
       console.error(error)
@@ -36,20 +42,42 @@ router.get(
 )
 
 router.post(
-  '/follow',
-  [jwtVerify, authenticateUser],
+  '/follow/:id',
+  [jwtVerify, authenticateUser, jwtSign],
   async (req: Request, res: Response) => {
     try {
       const { action } = req.query
-      let responseData: unknown
+      let vacation: Vacation[]
       switch (action) {
         case 'unfollow':
-          responseData = await unfollow(req.body)
-          res.send(responseData)
+          await unfollow({
+            vacation: +req.params.id,
+            id: res.locals.user.id,
+          })
+          vacation = await findVacations(+req.params.id, true)
+
+          res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
+            httpOnly: true,
+            maxAge: 90000000,
+            sameSite: 'strict',
+            path: '/',
+          })
+          res.send(vacation)
           break
         case 'follow':
-          responseData = await follow(req.body)
-          res.send(responseData)
+          await follow({
+            vacation: +req.params.id,
+            id: res.locals.user.id,
+          })
+          vacation = await findVacations(+req.params.id, true)
+
+          res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
+            httpOnly: true,
+            maxAge: 90000000,
+            sameSite: 'strict',
+            path: '/',
+          })
+          res.send(vacation)
           break
         default:
           res.sendStatus(404)
@@ -92,13 +120,11 @@ router.post(
       if (!validationRes.isEmpty()) {
         return res.status(400).send({ errors: validationRes.array() })
       }
-
       const newUser: User = {
         ...req.body,
         password: res.locals.password,
       }
       await createUser(newUser)
-
       res.send({ message: CONSTANTS.SUCCESS_MESSAGES.REGISTER_SUCCESS })
     } catch (error) {
       console.error(error)
@@ -111,20 +137,93 @@ router.post(
   '/login',
   [userLoginValidator, jwtSign],
   async (req: Request, res: Response) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     try {
       const validationRes = validationResult(req)
       if (!validationRes.isEmpty()) {
         return res.status(400).send({ errors: validationRes.array() })
       }
-
-      res.cookie('jwt', `bearer ${res.locals.accessToken}`, {
+      const user = await findUserByName(res.locals.username)
+      res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
         httpOnly: true,
-        maxAge: 600,
+        maxAge: 90000000,
         sameSite: 'strict',
         path: '/',
       })
-      console.log(res.locals.accessToken)
-      res.send({ message: CONSTANTS.SUCCESS_MESSAGES.LOGIN_SUCCESS })
+
+      res.send({
+        message: `${res.locals.userRole} ${res.locals.username} ${CONSTANTS.SUCCESS_MESSAGES.LOGIN_SUCCESS}`,
+        user: user,
+      })
+    } catch (error) {
+      console.error(error)
+      res.sendStatus(500)
+    }
+  }
+)
+router.post('/logout', [jwtVerify], async (req: Request, res: Response) => {
+  try {
+    res.clearCookie('auth-token')
+    res.send({ message: 'logged out' })
+  } catch (error) {
+    console.error(error)
+    res.sendStatus(500)
+  }
+})
+
+router.get(
+  '/followed-vacations',
+  [jwtVerify, authenticateUser, jwtSign],
+  async (req: Request, res: Response) => {
+    try {
+      const { username } = req.query
+
+      const user = await findUserByName(username as string)
+      const userVacations = user.vacations
+      const vacationsList = await findVacations(undefined, true)
+      const vacations = []
+      for (const vacation of vacationsList) {
+        for (const followedVacation of userVacations) {
+          if (vacation.id === followedVacation.id) vacations.push(vacation)
+        }
+      }
+
+      res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
+        httpOnly: true,
+        maxAge: 90000000,
+        sameSite: 'strict',
+        path: '/',
+      })
+
+      vacations.length ? res.send(vacations) : res.sendStatus(404)
+    } catch (error) {
+      console.error(error)
+      res.sendStatus(500)
+    }
+  }
+)
+
+router.get(
+  '/all-followed-vacations',
+  [jwtVerify, authenticateUser, jwtSign],
+  async (req: Request, res: Response) => {
+    try {
+      const vacations = await findVacations()
+      const filteredVacations = vacations.filter(
+        (vacation) => vacation.users.length
+      )
+      res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
+        httpOnly: true,
+        maxAge: 90000000,
+        sameSite: 'strict',
+        path: '/',
+      })
+      filteredVacations.length
+        ? res.send(filteredVacations)
+        : res.sendStatus(404)
     } catch (error) {
       console.error(error)
       res.sendStatus(500)
@@ -132,12 +231,19 @@ router.post(
   }
 )
 router.get(
-  '/vacations',
-  [jwtVerify, authenticateUser],
+  '/paginated-vacations',
+  [jwtVerify, authenticateUser, jwtSign],
   async (req: Request, res: Response) => {
     try {
-      const vacation = await findVacations()
-      vacation.length ? res.send(vacation) : res.sendStatus(404)
+      const { page } = req.query
+      const vacations = await findPaginatedVacations((+page - 1) * 9, 9)
+      res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
+        httpOnly: true,
+        maxAge: 90000000,
+        sameSite: 'strict',
+        path: '/',
+      })
+      vacations[1] ? res.send(vacations) : res.sendStatus(404)
     } catch (error) {
       console.error(error)
       res.sendStatus(500)
@@ -146,7 +252,7 @@ router.get(
 )
 
 router.patch(
-  '/edit-profile/:id',
+  '/edit-profile',
   [
     userDataValidator,
     passwordValidator,
@@ -157,22 +263,25 @@ router.patch(
   ],
   async (req: Request, res: Response) => {
     try {
+      const { username } = req.query
+      const user = await findUserByName(username as string)
       let newUser = req.body
       if (req.body.password) {
         newUser = { ...req.body, password: res.locals.password }
       }
       if (req.body.username) {
-        res.cookie('jwt', `bearer ${res.locals.accessToken}`, {
+        res.locals.username = req.body.username
+
+        res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
           httpOnly: true,
-          maxAge: 600,
+          maxAge: 90000000,
           sameSite: 'strict',
           path: '/',
         })
       }
-      const isUpdated = await updateUser(+req.params.id, newUser)
-      isUpdated
-        ? res.send(`user ${req.params.id} updated`)
-        : res.send('nothing updated')
+      const isUpdated = await updateUser(user.id, newUser)
+      const updatedUser = await findUsers(user.id)
+      isUpdated ? res.send(updatedUser) : res.send('nothing updated')
     } catch (error) {
       console.error(error)
       res.sendStatus(500)

@@ -14,11 +14,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     !req.file &&
     (req.url === '/add-vacation' || req.url === '/add-vacation/')
   ) {
-    return res.status(400).send({ error: CONSTANTS.ERRORS.MISSING_DATA_ERROR })
+    return res.status(400).send({ error: CONSTANTS.ERRORS.MISSING_IMAGE_ERROR })
   }
-  if (`/${req.url.split('/')[1]}` === '/edit-vacation') {
+  if (`${req.url.split('?')[0]}` === '/edit-vacation') {
     matchedData.push('imgName')
   }
+
   for (const key in req.body) {
     if (!matchedData.includes(key)) {
       return res.status(400).send({ errors: `[invalid property ${key}]` })

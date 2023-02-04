@@ -3,11 +3,7 @@ import { Role } from '../entity/User'
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.url.split('?')[0] === '/follow') {
-      if (res.locals.user.role === Role.USER) {
-        return next()
-      }
-    } else if (
+    if (
       res.locals.user.role === Role.ADMIN ||
       res.locals.user.role === Role.USER
     ) {

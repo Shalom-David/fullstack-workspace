@@ -4,7 +4,7 @@ import { findUsers } from '../controllers/users'
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization
+    const authHeader = decodeURIComponent(req.headers.cookie)
     if (!authHeader) {
       return res.sendStatus(401)
     }
