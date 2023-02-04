@@ -77,10 +77,7 @@ export const updateVacation = async (
   }
   if (file) {
     const matchedFile: string = await fileMatcher(imgName)
-    console.log(imgName)
-    console.log('file?')
-    console.log(file)
-    console.log(matchedFile)
+
     if (matchedFile) {
       await unlink(`../images/${matchedFile}`)
       await writeFile(
@@ -88,15 +85,12 @@ export const updateVacation = async (
         file.buffer
       )
       imgName = timestamp.toString()
-      console.log('imgName2')
-      console.log(imgName)
     }
   }
   for (const prop in dataProps) {
     vacation[prop] = dataProps[prop]
   }
-  console.log('imgName1')
-  console.log(vacation.imgName)
+
   vacation.imgName = imgName
   return await vacation.save()
 }

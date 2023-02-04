@@ -1,0 +1,102 @@
+.noshow {
+  display: none;
+}
+small {
+  display: block;
+  color: red;
+  font-weight: bold;
+}
+
+.form-container {
+  text-align: center;
+}
+
+.logoImg {
+  width: 33vw;
+}
+body {
+  touch-action: pan-y;
+  height: 100%;
+  background-image: url('./libs/background.jpg');
+  height: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.card-container {
+  width: 30vw;
+  margin: 5vw;
+}
+.vacation-card-container {
+  width: 20vw;
+  margin: 3vw;
+}
+.vacation-card-div {
+  display: flex;
+  flex-direction: column;
+  height: 750px;
+}
+
+.description {
+  height: 90px;
+  overflow: hidden;
+}
+.description:hover {
+  overflow: auto;
+}
+.drop-btn {
+  width: 100%;
+}
+.graph {
+  margin-left: 20vw;
+  width: 50vw;
+  background-color: #ffffff5d;
+}
+.cursor {
+  cursor: pointer;
+}
+#centerLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 63px;
+  height: 100vh;
+}
+.textarea {
+  resize: none;
+}
+img.card-img-bottom {
+  height: 200px;
+}
+@media screen and (max-width: 1200px) {
+  .vacation-card-container {
+    width: 40vw;
+  }
+  .vacation-card-div {
+    height: 775px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .vacation-card-container {
+    width: 75vw;
+  }
+  .vacation-card-div {
+    height: auto;
+  }
+}
+@media screen and (max-width: 991px) {
+  .btn {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 2250px) {
+  .vacation-card-div {
+    height: 820px;
+  }
+}
+@media screen and (min-width: 3000px) {
+  .vacation-card-div {
+    height: 1000px;
+  }
+}
