@@ -48,7 +48,7 @@ function FollowedVacations() {
                 (user) => user.username === userDetail.username
               ) && (
                 <Card
-                  className="vacation-card-container border border-3 border-info bg-light d-inline-block fw-bold my-5"
+                  className="vacation-card-container bg-light d-inline-block fw-bold my-5"
                   key={vacation.id}
                 >
                   <Card.Body className="vacation-card-div">
