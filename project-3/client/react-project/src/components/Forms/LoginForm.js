@@ -36,67 +36,75 @@ function LoginForm() {
       {isLogin && loginState.userDetail.role && (
         <Navigate replace to="/vacations" />
       )}
-      <Container>
-        <Row className="vh-100 d-flex justify-content-center align-items-center">
-          <Col md={8} lg={6} xs={12}>
-            <Card className="shadow">
-              <Card.Body>
-                <div className="mb-3 mt-md-4">
-                  <h2 className="fw-bold mb-2 text-center ">Login</h2>
-                  <p className=" mb-5">
-                    Please enter your username and password!
-                  </p>
-                  <div className="mb-3">
-                    <form
-                      onSubmit={handleSubmit((data) => {
-                        dispatch(login(data))
-                      })}
-                    >
-                      <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className="text-center">
-                          Username
-                        </Form.Label>
-                        <Form.Control
-                          name="username"
-                          type="text"
-                          placeholder="Username"
-                          {...register('username')}
-                        />
-                      </Form.Group>
-
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicPassword"
+   
+        <Container>
+          <Row className="d-flex justify-content-center align-items-center">
+            <Col md={8} lg={6} xs={12}>
+              <Card className="shadow">
+                <Card.Body>
+                  <div className="mb-3 mt-md-4">
+                    <h2 className="fw-bold mb-2 text-center ">Login</h2>
+                    <p className=" mb-5">
+                      Please enter your username and password!
+                    </p>
+                    <div className="mb-3">
+                      <form
+                        onSubmit={handleSubmit((data) => {
+                          dispatch(login(data))
+                        })}
                       >
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          name="password"
-                          placeholder="Password"
-                          {...register('password')}
-                        />
-                      </Form.Group>
-                      <div className="d-grid">
-                        <Button variant="primary" type="submit">
-                          Login
-                        </Button>
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                          <Form.Label className="text-center">
+                            Username
+                          </Form.Label>
+                          <Form.Control
+                            name="username"
+                            type="text"
+                            placeholder="Username"
+                            {...register('username')}
+                          />
+                          <small>{errors.username?.message}</small>
+                        </Form.Group>
+
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicPassword"
+                        >
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            {...register('password')}
+                          />
+                          <small>{errors.password?.message}</small>
+                        </Form.Group>
+                        <small>
+                          {loginState.errors.includes('incorrect') &&
+                            loginState.errors}
+                        </small>
+                        <div className="d-grid">
+                          <Button variant="primary" type="submit">
+                            Login
+                          </Button>
+                        </div>
+                      </form>
+                      <div className="mt-3">
+                        <p className="mb-0  text-center">
+                          Don't have an account?{' '}
+                          <a href="/register" className="text-primary fw-bold">
+                            Register
+                          </a>
+                        </p>
                       </div>
-                    </form>
-                    <div className="mt-3">
-                      <p className="mb-0  text-center">
-                        Don't have an account?{' '}
-                        <a href="/register" className="text-primary fw-bold">
-                          Sign Up
-                        </a>
-                      </p>
                     </div>
                   </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+
     </div>
   )
 }

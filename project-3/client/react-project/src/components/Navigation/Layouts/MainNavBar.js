@@ -42,7 +42,7 @@ export function MainNavBar() {
             <img className="logoImg" src={logo} alt="travelays-logo" />
           </Link>
         </Navbar.Brand>
-        {credentials.role && credentials.username ? (
+        {credentials.username ? (
           <>
             <Navbar.Toggle
               className="nav-toggle-btn"

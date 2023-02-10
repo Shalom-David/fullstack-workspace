@@ -50,7 +50,6 @@ function RegistrationForm() {
   } = useForm({
     resolver: yupResolver(schema),
   })
-  const { reset } = loginActions
   const submitForm = async (data) => {
     const user = {
       firstName: data.firstName,
@@ -66,14 +65,13 @@ function RegistrationForm() {
 
     return () => {
       setRegistered(true)
-      // dispatch(reset())
     }
   }, [loginState.loginStatus.message, setRegistered, dispatch])
   return (
     <div>
       {registered && <Navigate replace to="/login" />}
       <Container>
-        <Row className="vh-100 d-flex justify-content-center align-items-center">
+        <Row className="d-flex justify-content-center align-items-center">
           <Col md={8} lg={6} xs={12}>
             <Card className="px-4">
               <Card.Body>
@@ -117,6 +115,10 @@ function RegistrationForm() {
                           {...register('username')}
                         />
                         <small>{errors.username?.message}</small>
+                        <small>
+                          {loginState.errors.includes('in use') &&
+                            loginState.errors}
+                        </small>
                       </Form.Group>
 
                       <Form.Group
@@ -159,9 +161,9 @@ function RegistrationForm() {
                     </form>
                     <div className="mt-3">
                       <p className="mb-0  text-center">
-                        Already have an account??{' '}
+                        Already have an account?{' '}
                         <a href="/login" className="text-primary fw-bold">
-                          Sign In
+                          Login
                         </a>
                       </p>
                     </div>

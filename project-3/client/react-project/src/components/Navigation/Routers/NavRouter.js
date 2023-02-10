@@ -23,7 +23,7 @@ export function NavRouter() {
         <Route path="analytics" element={<FollowGraph />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="register" element={<RegistrationForm />} />
-        <Route path="*" element={<LoginForm />} />
+        <Route path="*" element={<VacationsPage />} />
       </Routes>
     </>
   )

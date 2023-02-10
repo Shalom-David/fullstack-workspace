@@ -182,7 +182,7 @@ export const deleteVacation = createAsyncThunk(
   async (vacationId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/admin/${vacationId}`
+        `http://localhost:8080/admin/vacation/${vacationId}`
       )
       return response.data
     } catch (error) {

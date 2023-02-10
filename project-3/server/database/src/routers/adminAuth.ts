@@ -44,7 +44,7 @@ router.post(
 )
 
 router.delete(
-  '/:id',
+  '/vacation/:id',
   [jwtVerify, authenticateAdmin],
   async (req: Request, res: Response) => {
     try {
