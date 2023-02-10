@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { userUpdate } from '../../redux/features/userSlice.js'
+import { logout, userUpdate } from '../../redux/features/userSlice.js'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -96,20 +96,29 @@ function UpdateUserForm() {
     setLastNameDisabled(true)
     setUsernameDisabled(true)
     setPasswordDisabled(true)
+    const updateAndLogout = () => {
+      dispatch(userUpdate(updateData))
+      setUpdateState(true)
+      dispatch(logout())
+    }
     const user = Object.fromEntries(
       Object.entries(data).filter(
         ([key, value]) =>
           value !== '' && key !== 'confirmPassword' && value !== undefined
       )
     )
-    if (!Object.keys(user).length) return
+    if (!Object.keys(user).length) {
+      return
+    }
     const updateData = {
       username: userDetail.username,
       formData: user,
     }
+
     Object.entries(user).filter(([key, value]) => {
       if (key === 'username' || key === 'password') {
-        return dispatch(userUpdate(updateData)) && setUpdateState(true)
+        updateAndLogout()
+        return
       }
     })
     return dispatch(userUpdate(updateData))
@@ -200,7 +209,10 @@ function UpdateUserForm() {
                     }}
                   />
                   <small>{errors.username?.message}</small>
-                  <small>{loginState.errors}</small>
+                  <small>
+                    {loginState.errors.includes('in use') &&
+                      'username already in use!'}
+                  </small>
                 </Card.Text>
               </Card.Title>
               <Card.Title className="">

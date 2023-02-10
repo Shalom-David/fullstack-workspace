@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 export function AddVacation() {
   const vacationErrors = useSelector((state) => state.vacations.errors)
   const newVacation = useSelector((state) => state.vacations.newVacation)
-  const userRole = useSelector((state) => state.login.userDetail.role)
+  const userDetail = useSelector((state) => state.login.userDetail)
   const dispatch = useDispatch()
   const { reset } = vacationsActions
 
@@ -59,7 +59,7 @@ export function AddVacation() {
       {vacationErrors.includes('403') && <Navigate replace to="/login" />}
       {newVacation && <Navigate replace to="/login" />}
 
-      {userRole === 'admin' && (
+      {userDetail.role === 'admin' && (
         <VacationForm submitForm={submitForm} validationSchema={schema} />
       )}
     </div>

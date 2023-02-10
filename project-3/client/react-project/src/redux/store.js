@@ -9,5 +9,5 @@ export default configureStore({
     login: loginReducer,
   },
   middlewares: (getDefaultMiddleware) =>
-    getDefaultMiddleware({}).concat(logger.createLogger()),
+    getDefaultMiddleware().concat(logger.createLogger()),
 })

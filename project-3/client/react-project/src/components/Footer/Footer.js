@@ -20,7 +20,7 @@ function Footer() {
         <div className="footer-link-wrapper">
           <div className="footer-link-items">
             <h2>About Us</h2>
-            <Link to="/sign-up">How it works</Link>
+            <Link to="/">How it works</Link>
             <Link to="/">Testimonials</Link>
             <Link to="/">Careers</Link>
             <Link to="/">Investors</Link>
@@ -54,44 +54,19 @@ function Footer() {
           </div>
           <small className="website-rights">TRAVELAYS © 2023</small>
           <div className="social-icons">
-            <Link
-              className="social-icon-link"
-              to="/"
-              target="_blank"
-              aria-label="Facebook"
-            >
+            <Link className="social-icon-link" to="/" aria-label="Facebook">
               <FaFacebook />
             </Link>
-            <Link
-              className="social-icon-link"
-              to="/"
-              target="_blank"
-              aria-label="Instagram"
-            >
+            <Link className="social-icon-link" to="/" aria-label="Instagram">
               <FaInstagram />
             </Link>
-            <Link
-              className="social-icon-link"
-              to="/"
-              target="_blank"
-              aria-label="Youtube"
-            >
+            <Link className="social-icon-link" to="/" aria-label="Youtube">
               <FaYoutube />
             </Link>
-            <Link
-              className="social-icon-link"
-              to="/"
-              target="_blank"
-              aria-label="Twitter"
-            >
+            <Link className="social-icon-link" to="/" aria-label="Twitter">
               <FaTwitter />
             </Link>
-            <Link
-              className="social-icon-link"
-              to="/"
-              target="_blank"
-              aria-label="LinkedIn"
-            >
+            <Link className="social-icon-link" to="/" aria-label="LinkedIn">
               <FaLinkedin />
             </Link>
           </div>

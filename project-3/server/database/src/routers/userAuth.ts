@@ -268,17 +268,13 @@ router.patch(
       let newUser = req.body
       if (req.body.password) {
         newUser = { ...req.body, password: res.locals.password }
+        res.clearCookie('auth-token')
       }
       if (req.body.username) {
         res.locals.username = req.body.username
-
-        res.cookie('auth-token', `bearer ${res.locals.accessToken}`, {
-          httpOnly: true,
-          maxAge: 90000000,
-          sameSite: 'strict',
-          path: '/',
-        })
+        res.clearCookie('auth-token')
       }
+
       const isUpdated = await updateUser(user.id, newUser)
       const updatedUser = await findUsers(user.id)
       isUpdated ? res.send(updatedUser) : res.send('nothing updated')

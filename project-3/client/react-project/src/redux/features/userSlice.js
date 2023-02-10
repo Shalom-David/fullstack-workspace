@@ -13,7 +13,6 @@ export const getUserProfile = createAsyncThunk(
       )
       return response.data
     } catch (error) {
-      console.error(error.response.data.errors)
       throw Error(`${error.response.data.errors}`)
     }
   }
@@ -26,7 +25,6 @@ export const login = createAsyncThunk('users/Login', async (data) => {
 
     return response.data
   } catch (error) {
-    console.error(error.response.data.errors)
     throw Error(`${error.response.data.errors}`)
   }
 })
@@ -38,7 +36,6 @@ export const logout = createAsyncThunk('users/logout', async () => {
 
     return response.data
   } catch (error) {
-    console.error(error)
     throw Error(`${error.message} ${error.response.status}`)
   }
 })
@@ -67,7 +64,7 @@ export const userUpdate = createAsyncThunk(
       )
       return response.data
     } catch (error) {
-      throw Error(error.message)
+      throw Error(`${error.response.status} ${error.response.data.error}`)
     }
   }
 )
@@ -139,13 +136,20 @@ const loginSlice = createSlice({
       state.errors = action.error.message
     })
 
+    builder.addCase(userUpdate.pending, (state, action) => {
+      state.userUpdateStatus = false
+      state.errors = ''
+    })
     builder.addCase(userUpdate.fulfilled, (state, action) => {
-      state.userDetail.username = action.payload[0].username
+      state.userDetail.username =
+        action.payload[0].username === state.userDetail.username
+          ? action.payload[0].username
+          : ''
       state.userDetail.role = action.payload[0].role
       state.userDetail.firstName = action.payload[0].firstName
       state.userDetail.lastName = action.payload[0].lastName
       state.userDetail.followedVacations = action.payload[0].vacations
-      state.userUpdateStatus = !state.userUpdateStatus
+      state.userUpdateStatus = true
       state.errors = ''
     })
     builder.addCase(userUpdate.rejected, (state, action) => {

@@ -36,8 +36,8 @@ function VacationsPage() {
       dispatch(resetVacationsState())
     }
     const newPage = deleted ? 1 : page
-    const promise = dispatch(fetchVacations(newPage))
-    return () => promise.abort()
+    const fetchVacationsAction = dispatch(fetchVacations(newPage))
+    return () => fetchVacationsAction.abort()
   }, [pageTurn, deleted]) //excluding 'page' dependency to avoid infinite recursion
 
   useEffect(() => {

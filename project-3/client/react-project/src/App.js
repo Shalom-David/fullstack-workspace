@@ -6,8 +6,6 @@ import { NavRouter } from './components/Navigation/Routers/NavRouter'
 import Footer from './components/Footer/Footer'
 import { useEffect } from 'react'
 import { getUserProfile } from './redux/features/userSlice'
-import LoginForm from './components/Forms/LoginForm'
-
 function App() {
   const dispatch = useDispatch()
   const userDetail = useSelector((state) => state.login.userDetail)
