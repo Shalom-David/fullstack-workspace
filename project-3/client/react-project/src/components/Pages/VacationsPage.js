@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { FaEdit, FaHeart, FaHeartBroken, FaTrash } from 'react-icons/fa'
+import { Card } from 'react-bootstrap'
+import { Link, Navigate } from 'react-router-dom'
 import {
   deleteVacation,
   fetchVacations,
@@ -7,9 +10,6 @@ import {
   unfollowVacation,
   vacationsActions,
 } from '../../redux/features/vacationsSlice'
-import { FaEdit, FaHeart, FaHeartBroken, FaTrash } from 'react-icons/fa'
-import { Card } from 'react-bootstrap'
-import { Link, Navigate } from 'react-router-dom'
 import LoadSpinner from '../LoadingSpinner/LoadingSpinner'
 import { loginActions } from '../../redux/features/userSlice'
 

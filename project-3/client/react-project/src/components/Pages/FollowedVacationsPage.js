@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Card } from 'react-bootstrap'
+import { Navigate } from 'react-router-dom'
+import { FaHeartBroken } from 'react-icons/fa'
 import {
   fetchFollowedVacations,
   unfollowVacation,
 } from '../../redux/features/vacationsSlice'
 import { vacationsActions } from '../../redux/features/vacationsSlice.js'
-import { Card } from 'react-bootstrap'
 import { loginActions } from '../../redux/features/userSlice'
-import { FaHeartBroken } from 'react-icons/fa'
-import { Navigate } from 'react-router-dom'
 import LoadSpinner from '../LoadingSpinner/LoadingSpinner'
 function FollowedVacations() {
   const dispatch = useDispatch()
