@@ -29,21 +29,25 @@ router.post(
   }
 )
 
-router.get('/', [...accountQueryValidator], async (req: Request, res: Response) => {
-  try {
-    const validationRes = validationResult(req)
-    console.log(validationRes);
-    if (!validationRes.isEmpty()) {
-      return res.status(400).send({ errors: validationRes.array() })
+router.get(
+  '/',
+  [...accountQueryValidator],
+  async (req: Request, res: Response) => {
+    try {
+      const validationRes = validationResult(req)
+
+      if (!validationRes.isEmpty()) {
+        return res.status(400).send({ errors: validationRes.array() })
+      }
+      const { accountNumber } = req.query
+
+      const operations = await findAccountOperations(+(accountNumber as string))
+      operations.length ? res.send(operations) : res.sendStatus(404)
+    } catch (error) {
+      console.error(error)
+      res.status(500)
     }
-    const { accountNumber } = req.query
-    console.log(accountNumber)
-    const operations = await findAccountOperations(+(accountNumber as string))
-    operations.length ? res.send(operations) : res.sendStatus(404)
-  } catch (error) {
-    console.error(error)
-    res.status(500)
   }
-})
+)
 
 export default router
