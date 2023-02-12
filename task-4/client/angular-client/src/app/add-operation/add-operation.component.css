@@ -1,0 +1,13 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.formInput {
+  margin: 10px;
+}
+small {
+  color: red;
+}
