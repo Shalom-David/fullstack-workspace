@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../../redux/features/userSlice.js'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { Navigate } from 'react-router-dom'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { login } from '../../redux/features/userSlice.js'
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -36,7 +36,8 @@ function LoginForm() {
       {isLogin && loginState.userDetail.role && (
         <Navigate replace to="/vacations" />
       )}
-   
+
+      {!loginState.userDetail.username && (
         <Container>
           <Row className="d-flex justify-content-center align-items-center">
             <Col md={8} lg={6} xs={12}>
@@ -104,7 +105,7 @@ function LoginForm() {
             </Col>
           </Row>
         </Container>
-
+      )}
     </div>
   )
 }

@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  createVacation,
-  vacationsActions,
-} from '../../redux/features/vacationsSlice.js'
 import * as yup from 'yup'
 import dayjs from 'dayjs'
 import { Navigate } from 'react-router-dom'
 import { VacationForm } from '../Forms/VacationForm.js'
 import { getUserProfile, loginActions } from '../../redux/features/userSlice.js'
+import {
+  createVacation,
+  vacationsActions,
+} from '../../redux/features/vacationsSlice.js'
 
 const schema = yup.object().shape({
   description: yup.string().max(150).required(),

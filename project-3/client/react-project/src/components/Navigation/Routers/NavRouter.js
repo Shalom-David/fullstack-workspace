@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { AddVacation } from '../../Pages/AddVacation'
 import VacationsPage from '../../Pages/VacationsPage'
 import FollowedVacations from '../../Pages/FollowedVacationsPage'
@@ -10,7 +11,9 @@ import LoginForm from '../../Forms/LoginForm'
 import { UpdateVacation } from '../../Pages/UpdateVacation'
 import RegistrationForm from '../../Forms/RegistrationForm'
 
+
 export function NavRouter() {
+  const credentials = useSelector((state) => state.login.userDetail)
   return (
     <>
       <MainNavBar />
@@ -23,7 +26,16 @@ export function NavRouter() {
         <Route path="analytics" element={<FollowGraph />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="register" element={<RegistrationForm />} />
-        <Route path="*" element={<VacationsPage />} />
+        <Route
+          path="*"
+          element={
+            credentials.username && credentials.role ? (
+              <VacationsPage />
+            ) : (
+              <LoginForm />
+            )
+          }
+        />
       </Routes>
     </>
   )

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getUserProfile,
-  loginActions,
-  logout,
-  userUpdate,
-} from '../../redux/features/userSlice.js'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -13,6 +7,12 @@ import { Card } from 'react-bootstrap'
 import { FaEdit } from 'react-icons/fa'
 import { Navigate } from 'react-router-dom'
 import { vacationsActions } from '../../redux/features/vacationsSlice.js'
+import {
+  getUserProfile,
+  loginActions,
+  logout,
+  userUpdate,
+} from '../../redux/features/userSlice.js'
 
 const schema = yup.object().shape(
   {

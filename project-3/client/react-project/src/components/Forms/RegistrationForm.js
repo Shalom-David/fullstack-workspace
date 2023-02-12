@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginActions, userRegister } from '../../redux/features/userSlice.js'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { Navigate } from 'react-router-dom'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { userRegister } from '../../redux/features/userSlice.js'
 
 const schema = yup.object().shape({
   firstName: yup.string().min(3).max(25).required(),
