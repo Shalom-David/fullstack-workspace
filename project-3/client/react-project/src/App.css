@@ -25,7 +25,7 @@ body {
   background-size: cover;
 }
 .card-container {
-  width: 30vw;
+  width: 40vw;
   margin: 5vw;
 }
 .vacation-card-container {
@@ -69,6 +69,10 @@ body {
 img.card-img-bottom {
   height: 200px;
 }
+
+div.show {
+  margin-right: 20px;
+}
 @media screen and (max-width: 1200px) {
   .vacation-card-container {
     width: 40vw;
@@ -88,6 +92,15 @@ img.card-img-bottom {
 @media screen and (max-width: 991px) {
   .btn {
     width: 100%;
+  }
+  .card-container {
+    width: 70vw;
+    margin: 5vw;
+  }
+  div.show {
+    background: transparent;
+    border: none;
+    margin: 0;
   }
 }
 @media screen and (min-width: 2250px) {
