@@ -1,0 +1,65 @@
+<h2>New Operation</h2>
+<form (ngSubmit)="postOperation()">
+  <label for="accountNumber">Account Number</label>
+  <input
+    [(ngModel)]="accountNumber"
+    id="accountNumber"
+    class="formInput"
+    type="number"
+    name="accountNumber"
+  />
+  <small>{{ errors.accountNumberError }}</small>
+  <label for="operationAmount">Amount</label>
+  <input
+    [(ngModel)]="operationAmount"
+    id="operationAmount"
+    class="formInput"
+    type="number"
+    name="operationAmount"
+  />
+  <small>{{ errors.amountError }}</small>
+  <label for="operatoinType">Select Operation Type</label>
+  <select
+    [(ngModel)]="operatoinType"
+    class="formInput"
+    name="operatoinType"
+    id="operatoinType"
+  >
+    <option value="deposit">deposit</option>
+    <option value="withdraw">withdraw</option>
+    <option value="loan">Loan</option>
+  </select>
+  <label for="operationDate">Select Date</label>
+  <input
+    [(ngModel)]="operationDate"
+    id="operatoinDate"
+    class="formInput"
+    type="date"
+    name="operationDate"
+  />
+  <ng-container *ngIf="operatoinType === 'loan'">
+    <label for="loanInterestRate">Interest Rate</label>
+    <input
+      [(ngModel)]="loanInterestRate"
+      id="loanInterestRate"
+      class="formInput"
+      type="number"
+      name="loanInterestRate"
+    />
+    <small>{{ errors.interestRateError }}</small>
+    <label for="loanNumberOfPayments">Number of Payments</label>
+    <input
+      [(ngModel)]="loanNumberOfPayments"
+      id="loanNumberOfPayments"
+      class="formInput"
+      [defaultValue]="3"
+      min="3"
+      max="72"
+      type="number"
+      name="loanNumberOfPayments"
+    />
+    <small>{{ errors.numberofPaymentsError }}</small>
+  </ng-container>
+  <button type="submit">New Operation</button>
+  <button (click)="goBack()" type="button">Go Back</button>
+</form>

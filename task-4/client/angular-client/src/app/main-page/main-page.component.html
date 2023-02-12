@@ -1,0 +1,34 @@
+<div class="input">
+  <input [(ngModel)]="accountNumber" type="number" /><button
+    (click)="getAccountOperations()"
+  >
+    Get Operations
+  </button>
+
+  <small *ngIf="errorMessage">{{ errorMessage }}</small>
+</div>
+
+<div class="card-container">
+  <div class="card" *ngFor="let operation of operations">
+    <p>Operation: {{ operation.operation.type }}</p>
+    <p>Amount: {{ operation.operation.amount }}</p>
+    <p>Date: {{ operation.operation.operationDate | date : "dd/MM/yyyy" }}</p>
+    <p>
+      {{
+        operation.operation.interestRate
+          ? "interest Rate: " + operation.operation.interestRate
+          : ""
+      }}
+    </p>
+    <p>
+      {{
+        operation.operation.numberOfPayments
+          ? "Number of Payments: " + operation.operation.numberOfPayments
+          : ""
+      }}
+    </p>
+  </div>
+</div>
+<button *ngIf="isGetOperationsSuccess" (click)="addNewOperation()">
+  New Operation
+</button>

@@ -1,0 +1,19 @@
+.card {
+  border: 2px solid black;
+  margin: 10px;
+  padding: 10px;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+}
+small {
+  color: red;
+}
+.input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
