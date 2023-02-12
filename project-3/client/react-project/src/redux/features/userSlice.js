@@ -13,7 +13,8 @@ export const getUserProfile = createAsyncThunk(
       )
       return response.data
     } catch (error) {
-      throw Error(`${error.response.data.errors}`)
+      console.log(error)
+      throw Error(`${error.response.data.errors} ${error.response.status}`)
     }
   }
 )

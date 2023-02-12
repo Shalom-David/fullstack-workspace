@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, userUpdate } from '../../redux/features/userSlice.js'
+import {
+  getUserProfile,
+  loginActions,
+  logout,
+  userUpdate,
+} from '../../redux/features/userSlice.js'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -82,7 +87,8 @@ function UpdateUserForm() {
   const [userNameDisabled, setUsernameDisabled] = useState(true)
   const [passwordDisabled, setPasswordDisabled] = useState(true)
   const [updateState, setUpdateState] = useState(false)
-  const { reset } = vacationsActions
+  const { reset: resetVacationState } = vacationsActions
+  const { reset: resetLoginState } = loginActions
   const {
     register,
     handleSubmit,
@@ -124,14 +130,28 @@ function UpdateUserForm() {
     return dispatch(userUpdate(updateData))
   }
   useEffect(() => {
-    return () => dispatch(reset())
-  }, [reset])
+    dispatch(getUserProfile(userDetail.username))
+  }, [])
+  useEffect(() => {
+    return () => dispatch(resetVacationState())
+  }, [resetVacationState])
+  useEffect(() => {
+    if (
+      loginState.errors.includes('401') ||
+      loginState.errors.includes('403')
+    ) {
+      dispatch(resetLoginState())
+    }
+  }, [loginState.errors, resetLoginState])
   return (
     <div className="form-container">
       {loginState.userUpdateStatus && updateState && (
         <Navigate replace={true} to={'/login'} />
       )}
       {loginState.errors.includes('401') && (
+        <Navigate replace={true} to={'/login'} />
+      )}
+      {loginState.errors.includes('403') && (
         <Navigate replace={true} to={'/login'} />
       )}
       {userDetail.role !== '' && (

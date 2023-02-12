@@ -8,6 +8,7 @@ import * as yup from 'yup'
 import dayjs from 'dayjs'
 import { Navigate } from 'react-router-dom'
 import { VacationForm } from '../Forms/VacationForm.js'
+import { getUserProfile, loginActions } from '../../redux/features/userSlice.js'
 
 const schema = yup.object().shape({
   description: yup.string().max(150).required(),
@@ -36,8 +37,10 @@ export function AddVacation() {
   const vacationErrors = useSelector((state) => state.vacations.errors)
   const newVacation = useSelector((state) => state.vacations.newVacation)
   const userDetail = useSelector((state) => state.login.userDetail)
+  const userErrors = useSelector((state) => state.login.errors)
   const dispatch = useDispatch()
-  const { reset } = vacationsActions
+  const { reset: resetVacationsState } = vacationsActions
+  const { reset: resetLoginState } = loginActions
 
   const submitForm = async (data) => {
     const formData = new FormData()
@@ -51,12 +54,22 @@ export function AddVacation() {
     dispatch(createVacation(formData))
   }
   useEffect(() => {
-    return () => dispatch(reset())
-  }, [dispatch, reset])
+    dispatch(getUserProfile(userDetail.username))
+  }, [])
+  useEffect(() => {
+    return () => dispatch(resetVacationsState())
+  }, [dispatch, resetVacationsState])
+  useEffect(() => {
+    if (userErrors.includes('401') || userErrors.includes('403')) {
+      dispatch(resetLoginState())
+    }
+  }, [userErrors, resetLoginState])
   return (
     <div className="form-container ">
       {vacationErrors.includes('401') && <Navigate replace to="/login" />}
       {vacationErrors.includes('403') && <Navigate replace to="/login" />}
+      {userErrors.includes('401') && <Navigate replace to="/login" />}
+      {userErrors.includes('403') && <Navigate replace to="/login" />}
       {newVacation && <Navigate replace to="/login" />}
 
       {userDetail.role === 'admin' && (

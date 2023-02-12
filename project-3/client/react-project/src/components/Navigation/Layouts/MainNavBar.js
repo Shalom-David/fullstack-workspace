@@ -52,7 +52,7 @@ export function MainNavBar() {
               }}
             />
             <Navbar.Collapse
-              className="justify-content-end me-5"
+              className="justify-content-end"
               id="responsive-navbar-nav"
             >
               <Nav>
@@ -102,7 +102,11 @@ export function MainNavBar() {
                   }
                   id="collasible-nav-dropdown"
                 >
-                  <NavDropdown.Item as={Link} to="/edit-profile">
+                  <NavDropdown.Item
+                    className="bg-transparent"
+                    as={Link}
+                    to="/edit-profile"
+                  >
                     <Button
                       className="fs-6 fw-bold border border-0 drop-btn"
                       variant="outline-primary"
@@ -111,20 +115,30 @@ export function MainNavBar() {
                       <FaUserEdit className="text-dark" /> Edit Profile
                     </Button>
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/my-vacations">
-                    <Button
-                      className="fs-6 fw-bold border border-0 drop-btn"
-                      variant="outline-primary"
-                      onClick={() => setIsOpen(!isOpen)}
+                  {credentials.role === 'user' && (
+                    <NavDropdown.Item
+                      className="bg-transparent"
+                      as={Link}
+                      to="/my-vacations"
                     >
-                      <BsCardChecklist className="text-dark" /> My Vacations
-                    </Button>
-                  </NavDropdown.Item>
+                      <Button
+                        className="fs-6 fw-bold border border-0 drop-btn"
+                        variant="outline-primary"
+                        onClick={() => setIsOpen(!isOpen)}
+                      >
+                        <BsCardChecklist className="text-dark" /> My Vacations
+                      </Button>
+                    </NavDropdown.Item>
+                  )}
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/login">
+                  <NavDropdown.Item
+                    className="bg-transparent"
+                    as={Link}
+                    to="/login"
+                  >
                     <Button
                       className="fs-6 fw-bold border border-0 drop-btn"
-                      variant="outline-primary"
+                      variant="outline-danger"
                       onClick={() => {
                         dispatch(logout())
                       }}

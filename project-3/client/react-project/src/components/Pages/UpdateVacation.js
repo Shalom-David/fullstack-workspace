@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateVacation } from '../../redux/features/vacationsSlice.js'
 import * as yup from 'yup'
 import dayjs from 'dayjs'
-import { Navigate, useLocation } from 'react-router-dom'
+import { RiArrowGoBackFill } from 'react-icons/ri'
+import { Button } from 'react-bootstrap'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { VacationForm } from '../Forms/VacationForm'
+import {
+  updateVacation,
+  vacationsActions,
+} from '../../redux/features/vacationsSlice.js'
+import { loginActions } from '../../redux/features/userSlice.js'
+
 const schema = yup.object().shape({
   description: yup.string().max(150),
   destination: yup.string().max(20),
@@ -31,7 +38,13 @@ export function UpdateVacation() {
   const dispatch = useDispatch()
   const location = useLocation()
   const { vacation } = location.state
-  
+  const { reset: resetLoginState } = loginActions
+  const { reset: resetVacationsState } = vacationsActions
+  const options = {
+    1: '$',
+    2: '€',
+    3: '₪',
+  }
   const submitForm = (data) => {
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
@@ -52,11 +65,13 @@ export function UpdateVacation() {
     formData.append('imgName', vacation.imgName)
     dispatch(updateVacation({ formData, id: vacation.id }))
   }
-  const options = {
-    1: '$',
-    2: '€',
-    3: '₪',
-  }
+
+  useEffect(() => {
+    if (vacationErrors.includes('401') || vacationErrors.includes('403')) {
+      dispatch(resetLoginState())
+    }
+    return () => dispatch(resetVacationsState())
+  }, [vacationErrors, resetLoginState, resetVacationsState])
   return (
     <>
       <div className="form-container">
@@ -65,12 +80,19 @@ export function UpdateVacation() {
         {updateStatus && <Navigate replace to="/vacations" />}
       </div>
       {userRole === 'admin' && (
-        <VacationForm
-          submitForm={submitForm}
-          validationSchema={schema}
-          vacationData={vacation}
-          selectOptions={options}
-        />
+        <>
+          <VacationForm
+            submitForm={submitForm}
+            validationSchema={schema}
+            vacationData={vacation}
+            selectOptions={options}
+          />
+          <div className="text-center fs-2">
+            <Button as={Link} to="/vacations">
+              <RiArrowGoBackFill className="text-dark" /> Go Back
+            </Button>
+          </div>
+        </>
       )}
     </>
   )

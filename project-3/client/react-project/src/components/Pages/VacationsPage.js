@@ -110,30 +110,32 @@ function VacationsPage() {
                   : 'd-flex justify-content-center'
               }
             >
-              <Card.Text className="d-inline-block fs-3 text-danger text-start mt-2">
-                {vacation.users?.some(
-                  (user) => user.username === userDetail.username
-                ) ? (
-                  <FaHeartBroken
-                    key="FaHeartBroken"
-                    title="Unfollow"
-                    className="fs-1  cursor me-3"
-                    onClick={() => {
-                      dispatch(unfollowVacation(vacation.id))
-                    }}
-                  />
-                ) : (
-                  <FaHeart
-                    title="Follow"
-                    className="fs-1 me-2 cursor"
-                    onClick={() => {
-                      dispatch(followVacation(vacation.id))
-                    }}
-                  />
-                )}
+              {userDetail.role === 'user' && (
+                <Card.Text className="d-inline-block fs-3 text-danger text-start mt-2">
+                  {vacation.users?.some(
+                    (user) => user.username === userDetail.username
+                  ) ? (
+                    <FaHeartBroken
+                      key="FaHeartBroken"
+                      title="Unfollow"
+                      className="fs-1  cursor me-3"
+                      onClick={() => {
+                        dispatch(unfollowVacation(vacation.id))
+                      }}
+                    />
+                  ) : (
+                    <FaHeart
+                      title="Follow"
+                      className="fs-1 me-2 cursor"
+                      onClick={() => {
+                        dispatch(followVacation(vacation.id))
+                      }}
+                    />
+                  )}
 
-                {vacation.users ? vacation.users.length : 0}
-              </Card.Text>
+                  {vacation.users ? vacation.users.length : 0}
+                </Card.Text>
+              )}
               {userDetail.role === 'admin' && (
                 <>
                   <Card.Text className="d-inline-block fs-3 text-start mt-2 cursor">
