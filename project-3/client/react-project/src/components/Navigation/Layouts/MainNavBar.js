@@ -38,7 +38,11 @@ export function MainNavBar() {
     <>
       <Navbar className="p-4" collapseOnSelect expand="lg" expanded={isOpen}>
         <Navbar.Brand className="text-end">
-          <Link to="/vacations">
+          <Link
+            to={
+              credentials.username && credentials.role ? '/vacations' : '/login'
+            }
+          >
             <img className="logoImg" src={logo} alt="travelays-logo" />
           </Link>
         </Navbar.Brand>
