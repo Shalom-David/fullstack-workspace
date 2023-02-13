@@ -9,7 +9,7 @@ pasword: admin
 **remember to change these login details in the application client once set up.
 
 ################################
-Credentials: 
+Roles:
 admin: is able to add, remove, and update vacation as well as view analytics for all followed vacatoins.
 user: is able to browse all vacations and their own followed vacatoins.
 
