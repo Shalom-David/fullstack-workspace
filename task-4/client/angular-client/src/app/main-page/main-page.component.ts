@@ -17,7 +17,7 @@ export class MainPageComponent {
     private router: Router
   ) {}
   errorMessage = '';
-  isGetOperationsSuccess: boolean = false;
+  // isGetOperationsSuccess: boolean = false;
   getAccountOperations() {
     this.operationService
       .getOperations(this.accountNumber)
@@ -25,7 +25,7 @@ export class MainPageComponent {
       .subscribe({
         next: (data) => {
           this.operations = data;
-          this.isGetOperationsSuccess = true;
+          // this.isGetOperationsSuccess = true;
         },
         error: (error) =>
           error.error.errors.forEach((err: any) => {
@@ -35,6 +35,6 @@ export class MainPageComponent {
       });
   }
   addNewOperation() {
-    this.router.navigate(['/add-operation', this.accountNumber]);
+    this.router.navigate(['/add-operation', this.accountNumber || '']);
   }
 }

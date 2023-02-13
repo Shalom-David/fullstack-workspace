@@ -29,6 +29,7 @@
     <option value="withdraw">withdraw</option>
     <option value="loan">Loan</option>
   </select>
+  <small>{{ errors.operationTypeError }}</small>
   <label for="operationDate">Select Date</label>
   <input
     [(ngModel)]="operationDate"
