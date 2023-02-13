@@ -20,7 +20,6 @@ export class AddOperationComponent implements OnInit {
     amountError: '',
     interestRateError: '',
     numberofPaymentsError: '',
-    operationTypeError: '',
   };
   constructor(
     private operationService: AccountOperationsService,
@@ -46,8 +45,7 @@ export class AddOperationComponent implements OnInit {
       this.formData.operation.numberOfPayments = this.loanNumberOfPayments;
     }
     this.operationService.postOperation(this.formData).subscribe({
-      error: (error) => {
-        console.log(error);
+      error: (error) =>
         error.error.errors.forEach((err: any) => {
           switch (err.msg) {
             case 'invalid account number':
@@ -74,20 +72,13 @@ export class AddOperationComponent implements OnInit {
                 numberofPaymentsError: err.msg,
               };
               break;
-            case 'invalid operation type':
-              this.errors = {
-                ...this.errors,
-                operationTypeError: 'please select operatoin type',
-              };
-              break;
           }
-        });
-      },
+        }),
     });
   }
 
-  goBack() {
-    this.router.navigate(['../'], {
+  goBack(){
+    this.router.navigate(['../', ], {
       relativeTo: this.activeRoute,
     });
   }

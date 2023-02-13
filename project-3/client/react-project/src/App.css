@@ -18,6 +18,7 @@ body {
   touch-action: pan-y;
   height: 100%;
   background-image: url('./libs/background.jpg');
+  height: 100%;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -70,7 +71,7 @@ img.card-img-bottom {
 }
 
 div.show {
-  margin-right: 30px;
+  margin-right: 20px;
 }
 @media screen and (max-width: 1200px) {
   .vacation-card-container {

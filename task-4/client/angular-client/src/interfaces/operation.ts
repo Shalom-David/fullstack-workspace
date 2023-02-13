@@ -14,5 +14,4 @@ export interface OperationErrors {
   amountError: string;
   interestRateError: string;
   numberofPaymentsError: string;
-  operationTypeError: string;
 }
