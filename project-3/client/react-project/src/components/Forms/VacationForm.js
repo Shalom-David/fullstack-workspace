@@ -25,7 +25,6 @@ export function VacationForm({
       if (value === vacationData.currency) currency = key
     })
   }
-
   return (
     <form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
       <Row className="mb-3">
@@ -63,6 +62,7 @@ export function VacationForm({
           <Form.Control
             name="startDate"
             type="date"
+            min={new Date().toISOString().split('T')[0]}
             className="form-control"
             defaultValue={
               vacationData
@@ -80,6 +80,7 @@ export function VacationForm({
           <Form.Control
             name="endDate"
             type="date"
+            min={new Date().toISOString().split('T')[0]}
             defaultValue={
               vacationData
                 ? dayjs(vacationData.endDate).format('YYYY-MM-DD')
