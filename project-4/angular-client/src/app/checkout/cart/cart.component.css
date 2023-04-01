@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: row;
   gap: 15px;
-  align-items: start;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
@@ -51,7 +51,18 @@
 #quantity-input {
   text-align: center;
 }
-
+.cart-price {
+  text-align: center;
+  display: inline-block;
+}
+.cart-price-container {
+  display: inline-block;
+  padding: 0 10px;
+  background-color: #fffefc;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 2px 2px #0000008c;
+}
 @media screen and (max-width: 1100px) {
   .cart-card {
     margin: 1vh 10vw;
@@ -83,7 +94,7 @@
   display: flex;
   flex-direction: row;
   gap: 15px;
-  align-items: start;
+  align-items: flex-start;
   justify-content: space-between;
 }
 

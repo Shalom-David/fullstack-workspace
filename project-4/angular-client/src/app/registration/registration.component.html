@@ -1,8 +1,4 @@
-<mat-stepper
-  class="example-stepper"
-  [orientation]="(stepperOrientation | async)!"
-  [linear]="true"
->
+<mat-stepper [orientation]="(stepperOrientation | async)!" [linear]="true">
   <mat-step [stepControl]="registrationFormStep1" label="Step 1">
     <form [formGroup]="registrationFormStep1" id="registration-form-step-1">
       <table class="full-width" cellspacing="0">
@@ -22,7 +18,7 @@
                 <mat-error
                   *ngIf="registrationFormStep1.get('email')?.invalid"
                   >{{
-                    getErrorMessage(registrationFormStep1, "email")
+                    errorMessage(registrationFormStep1, "email")
                   }}</mat-error
                 >
               </mat-form-field>
@@ -54,7 +50,7 @@
                 <mat-error
                   *ngIf="registrationFormStep1.get('password')?.invalid"
                   >{{
-                    getErrorMessage(registrationFormStep1, "password")
+                    errorMessage(registrationFormStep1, "password")
                   }}</mat-error
                 >
               </mat-form-field>
@@ -87,7 +83,7 @@
                   *ngIf="registrationFormStep1.get('confirmPassword')?.invalid"
                 >
                   {{
-                    getErrorMessage(registrationFormStep1, "confirmPassword")
+                    errorMessage(registrationFormStep1, "confirmPassword")
                   }}
                 </mat-error>
               </mat-form-field>
@@ -114,7 +110,7 @@
                   <mat-error
                     *ngIf="registrationFormStep2.get('city')?.invalid"
                     >{{
-                      getErrorMessage(registrationFormStep2, "city")
+                      errorMessage(registrationFormStep2, "city")
                     }}</mat-error
                   >
                 </mat-form-field>
@@ -128,7 +124,7 @@
                   <mat-error
                     *ngIf="registrationFormStep2.get('street')?.invalid"
                     >{{
-                      getErrorMessage(registrationFormStep2, "street")
+                      errorMessage(registrationFormStep2, "street")
                     }}</mat-error
                   >
                 </mat-form-field>
@@ -145,7 +141,7 @@
                   <mat-label>Enter your first name</mat-label>
                   <input matInput formControlName="firstName" />
                   <mat-error>{{
-                    getErrorMessage(registrationFormStep2, "firstName")
+                    errorMessage(registrationFormStep2, "firstName")
                   }}</mat-error>
                 </mat-form-field>
               </div>
@@ -155,7 +151,7 @@
                   <mat-label>Enter your last name</mat-label>
                   <input matInput formControlName="lastName" />
                   <mat-error>{{
-                    getErrorMessage(registrationFormStep2, "lastName")
+                    errorMessage(registrationFormStep2, "lastName")
                   }}</mat-error>
                 </mat-form-field>
               </div>

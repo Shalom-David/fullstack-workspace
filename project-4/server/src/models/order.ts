@@ -35,7 +35,7 @@ const orderSchema = new Schema<Iorder>({
   cardEndsWith: { type: Number, required: true },
   status: {
     type: String,
-    enum: ['confirmed', 'rejected', 'cancelled'],
+    enum: ['complete', 'shipping', 'rejected', 'cancelled'],
     required: true,
   },
 })

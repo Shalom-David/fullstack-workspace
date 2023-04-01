@@ -37,8 +37,9 @@ app.use('/products', product)
 app.use('/order', order)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log('addds')
-  console.log(err.message)
+  console.log('?')
+  console.log(err)
+  console.log(err.status);
   switch (true) {
     case err.status === 401:
       res.status(err.status).set('content-type', 'text/plain').send(err.message)
@@ -73,7 +74,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         .set('content-type', 'text/plain')
         .send(err.message.split('/').slice(-1)[0])
       break
-    case err.message.includes('must be <= 100') || err.message.includes('must be >= 1'):
+    case err.message.includes('must be <= 100') ||
+      err.message.includes('must be >= 1'):
       res
         .status(err.status)
         .set('content-type', 'text/plain')

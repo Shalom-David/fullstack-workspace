@@ -20,7 +20,6 @@ export class CartsService {
       customerEmail: email,
       Authorization: 'Bearer ' + token,
     });
-  console.log(headers);
     return this.httpClient.get<Icart | string>(this.cartsUrl, {
       headers: headers,
     });
@@ -39,7 +38,6 @@ export class CartsService {
     cartData: IcartData & { update: boolean },
     token: string
   ): Observable<Icart> {
-    console.log(cartData);
     const headers = new HttpHeaders({
       Authorization: 'Bearer ' + token,
     });
@@ -62,8 +60,6 @@ export class CartsService {
   }
 
   setCartProduct(productId: string, quantity: number) {
-    console.log(productId);
-    console.log(this.cartState.cartProducts);
     const productIndex = this.cartState.cartProducts.findIndex(
       (product) => product.productId === productId
     );

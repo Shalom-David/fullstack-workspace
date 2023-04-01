@@ -41,19 +41,18 @@ export class CartComponent implements OnInit {
           next: (data) => {
             if (!data) this.cart = null;
             else {
-              (data as Icart).products.forEach((product) => {
-                product.imageData = `data:image/jpeg;base64, ${Buffer.from(
-                  product.imageData
-                ).toString('base64')}`;
-              });
-
               this.cart = data as Icart;
             }
             this.onCartDataChange();
           },
           error: (error: any) => {
-            if (error.status === 404) this.cart = null;
-            console.error(error);
+            if (error.status === 404) {
+              this.cart = null;
+            }
+            if (error.status === 403 || error.status === 401) {
+              this.usersService.logout();
+              this.router.navigate(['login'], { replaceUrl: true });
+            }
           },
         });
     }
@@ -67,11 +66,7 @@ export class CartComponent implements OnInit {
             next: (data) => {
               if (!data) this.cart = null;
               else {
-                (data as Icart).products.forEach((product) => {
-                  product.imageData = `data:image/jpeg;base64, ${Buffer.from(
-                    product.imageData
-                  ).toString('base64')}`;
-                });
+                this.cart = data as Icart;
 
                 this.cart = data as Icart;
               }
@@ -117,8 +112,10 @@ export class CartComponent implements OnInit {
         this.onCartDataChange();
       },
       error: (error) => {
-        this.cartService.setCartStatus(true);
-        console.error(error);
+        if (error.status === 403 || error.status === 401) {
+          this.usersService.logout();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
       },
     });
   }

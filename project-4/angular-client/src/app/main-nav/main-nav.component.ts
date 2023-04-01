@@ -56,7 +56,10 @@ export class MainNavComponent implements OnInit {
               this.user = data;
             },
             error: (error) => {
-              console.error(error);
+              if (error.status === 403 || error.status === 401) {
+                this.usersService.logout();
+                this.router.navigate(['login'], { replaceUrl: true });
+              }
             },
           });
 
@@ -69,7 +72,10 @@ export class MainNavComponent implements OnInit {
               else this.cart = data as Icart;
             },
             error: (error: any) => {
-              console.error(error.status);
+              if (error.status === 403 || error.status === 401) {
+                this.usersService.logout();
+                this.router.navigate(['login'], { replaceUrl: true });
+              }
             },
           });
       } else {
@@ -80,21 +86,15 @@ export class MainNavComponent implements OnInit {
     this.productsService
       .getProducts()
       .pipe(first())
-      .subscribe({
-        next: (data) => {
-          if (Array.isArray(data))
-            data.forEach((product) => {
-              this.searchOptions.push({
-                name: product.name,
-                category: product.category,
-              });
-              if (!this.categories.includes(product.category))
-                this.categories.push(product.category);
-            });
-        },
-        error: (error: any) => {
-          console.error(error);
-        },
+      .subscribe((data) => {
+        Object.entries(data)[0][1].forEach((product: Iproduct) => {
+          this.searchOptions.push({
+            name: product.name,
+            category: product.category,
+          });
+          if (!this.categories.includes(product.category))
+            this.categories.push(product.category);
+        });
       });
 
     this.cartService.cartState$.subscribe((state) => {
@@ -108,7 +108,10 @@ export class MainNavComponent implements OnInit {
               else this.cart = data as Icart;
             },
             error: (error: any) => {
-              console.error(error);
+              if (error.status === 403 || error.status === 401) {
+                this.usersService.logout();
+                this.router.navigate(['login'], { replaceUrl: true });
+              }
             },
           });
       }

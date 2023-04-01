@@ -1,0 +1,23 @@
+<mat-tab-group id="tabs">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>library_add</mat-icon>
+      Add Products
+    </ng-template>
+    <app-add-product (showSnackbar)="openSnackBar()"></app-add-product>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>edit</mat-icon>
+      Edit Products
+    </ng-template>
+    <app-edit-product (showSnackbar)="openSnackBar()"></app-edit-product>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>list</mat-icon>
+      Orders
+    </ng-template>
+    <app-orders #ordersComponent></app-orders>
+  </mat-tab>
+</mat-tab-group>

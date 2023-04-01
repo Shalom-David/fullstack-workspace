@@ -65,6 +65,13 @@
         </mat-card-header>
       </mat-card>
     </div>
+    <div *ngIf="cart">
+      <div class="cart-price-container">
+        <h2 class="cart-price">Total Cart Price:</h2>
+        {{ " " }}
+        <h3 class="cart-price">${{ cart.totalPrice }}</h3>
+      </div>
+    </div>
     <div *ngIf="!cart">
       <p>Cart is Empty</p>
       <button id="goToHomeBtn" mat-raised-button (click)="goToHomePage()">

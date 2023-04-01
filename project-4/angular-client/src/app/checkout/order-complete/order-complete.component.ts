@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { IcartProduct } from 'src/interfaces/cart';
 import { Iorder } from 'src/interfaces/order';
 import { CartsService } from 'src/services/carts.service';
-import { OrdersService } from 'src/services/orders.service';
-import { StatesService } from 'src/services/states.service';
+
 
 @Component({
   selector: 'app-order-complete',
@@ -14,7 +14,6 @@ export class OrderCompleteComponent {
   @Input() order!: Iorder;
   constructor(
     private router: Router,
-    private statesService: StatesService,
     private cartService: CartsService
   ) {}
 
@@ -29,9 +28,10 @@ export class OrderCompleteComponent {
   Items:
   ${order.customerCart.products
     .map(
-      (product: any) => `
+      (product: IcartProduct) => `
     Name: ${product.name}
     Quantity: ${product.quantity}
+    Unit Price $${product.unitPrice}
     Total Price: $${product.totalProductPrice}
   `
     )

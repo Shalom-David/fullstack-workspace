@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   IuserDetail,
   IuserRegistrationDetail,
+  IuserUpdateDetail,
   IuserWithAccessToken,
 } from 'src/interfaces/user';
 
@@ -41,7 +42,6 @@ export class UsersService {
   }
 
   logout() {
-    console.log('idk');
     this.userAccessData.loggedIn = false;
     this.userAccessData.customerEmail = '';
     this.userAccessData.token = '';
@@ -58,8 +58,23 @@ export class UsersService {
   }
 
   checkExistingEmail(email: { email: string }): Observable<boolean> {
-    console.log(email);
     return this.httpClient.post<boolean>(`${this.userUrl}/checkEmail`, email);
+  }
+
+  editUserProfile(
+    email: string,
+    token: string,
+    userData: IuserUpdateDetail
+  ): Observable<IuserWithAccessToken> {
+    const headers = new HttpHeaders({
+      customerEmail: email,
+      Authorization: 'Bearer ' + token,
+    });
+    return this.httpClient.patch<IuserWithAccessToken>(
+      `${this.userUrl}/edit-profile`,
+      userData,
+      { headers: headers }
+    );
   }
   setUserAccessData(email: string, token: string, loggedIn: boolean) {
     this.userAccessData.customerEmail = email;

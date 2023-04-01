@@ -13,7 +13,7 @@
             />
             <mat-icon matSuffix>email</mat-icon>
             <mat-error *ngIf="loginForm.get('email')?.invalid">{{
-              getErrorMessage("email")
+              errorMessage(loginForm, "email")
             }}</mat-error>
           </mat-form-field>
         </td>
@@ -38,9 +38,12 @@
             >
               <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
             </button>
-            <mat-error *ngIf="loginForm.get('password')?.invalid || error">{{
-              getErrorMessage("password")
-            }}</mat-error>
+            <mat-error
+              *ngIf="loginForm.get('password')?.invalid || serverError"
+              >{{
+                errorMessage(loginForm, "password", serverError || undefined)
+              }}</mat-error
+            >
           </mat-form-field>
         </td>
       </tr>

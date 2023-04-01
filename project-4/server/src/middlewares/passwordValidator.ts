@@ -20,7 +20,7 @@ schema
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.body.password && `${req.url.split('?')[0]}` === '/edit-profile') {
+    if (!req.body.password && req.url === '/edit-profile') {
       return next()
     }
     const errors = schema.validate(req.body.password, {

@@ -42,6 +42,10 @@
   max-height: 80vh;
   overflow-y: auto;
 }
+#spinner-container {
+  display: flex;
+  justify-content: center;
+}
 
 @media screen and (max-width: 480px) {
   .product-card {

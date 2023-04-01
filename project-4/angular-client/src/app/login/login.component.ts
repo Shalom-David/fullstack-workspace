@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ErrorsService } from 'src/services/errors.service';
 import { UsersService } from 'src/services/users.service';
 
 @Component({
@@ -16,35 +17,20 @@ import { UsersService } from 'src/services/users.service';
 export class LoginComponent {
   hide = true;
   loginForm!: FormGroup;
-  error!: string;
+  serverError!: string;
+  errorMessage = this.errors.getErrorMessage;
   constructor(
     private _formBuilder: FormBuilder,
     private usersService: UsersService,
-    private router: Router
+    private router: Router,
+    private errors: ErrorsService
   ) {}
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'auto' });
     this.loginForm = this._formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
-  }
-
-  getErrorMessage(controlName: string) {
-    console.log(this.loginForm.controls[controlName].errors);
-    switch (true) {
-      case this.loginForm.controls[controlName].hasError('required'):
-        return 'You must enter a value';
-      case controlName === 'email' &&
-        this.loginForm.controls[controlName].hasError('email'):
-        return 'Not a valid Email';
-      case controlName === 'password' &&
-        this.error &&
-        this.loginForm.controls[controlName].hasError('serverError'):
-        console.log('????');
-        return this.error;
-      default:
-        return '';
-    }
   }
 
   login() {
@@ -54,7 +40,11 @@ export class LoginComponent {
         this.router.navigate([''], { replaceUrl: true });
       },
       error: (error) => {
-        this.error = error.error;
+        if (error.status === 403 || error.status === 401) {
+          this.usersService.logout();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+        this.serverError = error.error;
         this.loginForm.get('password')?.setErrors({ serverError: true });
       },
     });

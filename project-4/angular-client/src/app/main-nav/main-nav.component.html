@@ -28,7 +28,8 @@
       <form id="flex-form">
         <mat-form-field appearance="fill" id="select-category">
           <mat-label class="category-label"
-            ><mat-icon>format_list_bulleted</mat-icon><span class="label-text"> Category</span></mat-label
+            ><mat-icon>format_list_bulleted</mat-icon
+            ><span class="label-text"> Category</span></mat-label
           >
           <mat-select (selectionChange)="onOptionSelect($event)">
             <mat-option>Clear</mat-option>
@@ -97,17 +98,30 @@
             <mat-icon>login</mat-icon>
             <span>Sign In</span>
           </button>
+          <button *ngIf="!user" mat-menu-item (click)="goTo('register')">
+            <mat-icon>play_arrow</mat-icon>
+            <span>Sign Up</span>
+          </button>
+          <button
+            *ngIf="user && user.role === 'admin'"
+            mat-menu-item
+            (click)="goTo('admin')"
+          >
+            <mat-icon>supervisor_account</mat-icon>
+            <span>Admin Panel</span>
+          </button>
           <button *ngIf="user" mat-menu-item (click)="goTo('profile')">
             <mat-icon>manage_accounts</mat-icon>
             <span>User Profile</span>
           </button>
+          <button *ngIf="user" mat-menu-item (click)="goTo('orders')">
+            <mat-icon>view_list</mat-icon>
+            <span>My Orders</span>
+          </button>
+
           <button *ngIf="user" mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Sign Out</span>
-          </button>
-          <button *ngIf="!user" mat-menu-item (click)="goTo('register')">
-            <mat-icon>play_arrow</mat-icon>
-            <span>Sign Up</span>
           </button>
         </mat-menu>
       </div>

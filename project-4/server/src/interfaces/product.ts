@@ -11,7 +11,7 @@ export interface IproductWithImage {
   category: string
   price: number
   description: string
-  imageData: Buffer
+  imageData: string
 }
 
 export interface IpaginatedProducts {

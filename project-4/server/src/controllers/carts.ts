@@ -1,11 +1,11 @@
-import { readdir, readFile } from 'fs/promises'
-import mongoose, { Document } from 'mongoose'
+import { readFile } from 'fs/promises'
+import { Document } from 'mongoose'
 import { Icart, IcartData, IcartProduct } from '../interfaces/cart'
-import { Iproduct } from '../interfaces/product'
 import { Cart } from '../models/cart'
 import { findProductbyId } from './products'
 import { findUser } from './users'
 import { fileMatcher } from '../utils'
+import { Buffer } from 'buffer'
 export const createCart = async (
   doc: IcartData
 ): Promise<Document<unknown, any, Icart> | null | Icart> => {
@@ -97,14 +97,17 @@ export const findCart = async (email: string): Promise<Icart> => {
   if (cart) {
     for (const product of cart.products) {
       const [productData] = await findProductbyId(product._id.toString())
+      const image = await readFile(
+        `./images/${await fileMatcher(productData.imageId)}`
+      )
       productsDataArray.push({
         name: productData.name,
         unitPrice: productData.price,
         quantity: product.quantity,
         totalProductPrice: product.totalProductPrice,
-        imageData: await readFile(
-          `./images/${await fileMatcher(productData.imageId)}`
-        ),
+        imageData: `data:image/jpeg;base64, ${Buffer.from(image).toString(
+          'base64'
+        )}`,
         _id: product._id,
       })
     }

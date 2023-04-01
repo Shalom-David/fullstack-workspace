@@ -11,5 +11,5 @@ export interface Iorder {
   deliveryDate: string
   orderDate: string
   cardEndsWith: number
-  status: 'confirmed' | 'rejected' | 'canceled'
+  status: 'complete' | 'rejected' | 'cancelled' | 'shipping'
 }

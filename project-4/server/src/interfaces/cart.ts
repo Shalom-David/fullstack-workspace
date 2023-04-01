@@ -13,8 +13,7 @@ export interface IcartProduct {
   unitPrice: number
   totalProductPrice: number
   name?: string
-  imageData?: Buffer
-
+  imageData?: string
 }
 
 export interface IcartData {

@@ -1,18 +1,14 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatStepper, StepperOrientation } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UsersService } from 'src/services/users.service';
-import { IuserDetail, IuserRegistrationDetail } from 'src/interfaces/user';
+import { IuserRegistrationDetail } from 'src/interfaces/user';
+import { CustomValidatorsService } from 'src/services/custom-validators.service';
+import { ErrorsService } from 'src/services/errors.service';
 
 @Component({
   selector: 'app-registration',
@@ -28,59 +24,19 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
   registrationFormStep2!: FormGroup;
   email!: string;
   token!: string;
-  error!: string
+  errorMessage = this.errors.getErrorMessage;
   constructor(
     private _formBuilder: FormBuilder,
     breakpointObserver: BreakpointObserver,
     private usersService: UsersService,
+    private customValidators: CustomValidatorsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private errors: ErrorsService
   ) {
     this.stepperOrientation = breakpointObserver
       .observe('(min-width: 800px)')
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
-  }
-  private passwordComplexityValidator(
-    control: AbstractControl
-  ): ValidationErrors | null {
-    const value = control.value;
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasLowerCase = /[a-z]/.test(value);
-    const hasNumber = /\d/.test(value);
-
-    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-      return { passwordComplexity: true };
-    }
-
-    return null;
-  }
-  private passwordMatchValidator(
-    control: AbstractControl
-  ): ValidationErrors | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
-
-    if (
-      password &&
-      confirmPassword &&
-      password.value !== confirmPassword.value
-    ) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-    } else {
-      confirmPassword?.setErrors(null);
-    }
-
-    return null;
-  }
-
-  private emailExistsValidator(
-    control: AbstractControl
-  ): Observable<ValidationErrors | null> {
-    return this.usersService.checkExistingEmail({ email: control.value }).pipe(
-      map((emailExists) => {
-        return emailExists ? { emailExists: true } : null;
-      })
-    );
   }
 
   private setStepByFragment(): void {
@@ -116,7 +72,9 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
           '',
           {
             validators: [Validators.required, Validators.email],
-            asyncValidators: [this.emailExistsValidator.bind(this)],
+            asyncValidators: [
+              this.customValidators.emailExistsValidator.bind(this),
+            ],
             updateOn: 'blur',
           },
         ],
@@ -126,12 +84,12 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
             Validators.required,
             Validators.minLength(8),
             Validators.maxLength(18),
-            this.passwordComplexityValidator,
+            this.customValidators.passwordComplexityValidator,
           ],
         ],
         confirmPassword: ['', Validators.required],
       },
-      { validators: this.passwordMatchValidator }
+      { validators: this.customValidators.passwordMatchValidator }
     );
     this.registrationFormStep2 = this._formBuilder.group({
       city: ['', Validators.required],
@@ -144,36 +102,12 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
     this.setStepByFragment();
     this.updateFragmentOnStepChange();
   }
-  getErrorMessage(formGroup: FormGroup, controlName: string) {
-    const control = formGroup.controls[controlName];
-    switch (true) {
-      case control.hasError('required'):
-        return 'You must enter a value';
-      case controlName === 'email' && control.hasError('email'):
-        return 'Not a valid Email';
-      case controlName === 'email' && control.hasError('emailExists'):
-        return 'email already in use';
-      case controlName === 'password' && control.hasError('minlength'):
-        return 'Password must be at least 8 characters';
-      case controlName === 'password' && control.hasError('maxlength'):
-        return 'Password must not exceed 18 characters';
-      case controlName === 'password' && control.hasError('passwordComplexity'):
-        return 'Password must contain at least one uppercase letter, lowercase letter, and one number';
-      case controlName === 'confirmPassword' &&
-        control.hasError('passwordMismatch'):
-        return 'passwords do not match';
-      default:
-        return '';
-    }
-  }
+
   goHome() {
     this.usersService.setUserAccessData(this.email, this.token, true);
     this.router.navigate([''], { replaceUrl: true });
   }
   register() {
-    console.log(
-      this.registrationFormStep1.valid && this.registrationFormStep2.valid
-    );
     const user: IuserRegistrationDetail = {
       firstName: this.registrationFormStep2.get('firstName')?.value,
       lastName: this.registrationFormStep2.get('lastName')?.value,
@@ -189,7 +123,12 @@ export class RegistrationComponent implements OnInit, AfterViewInit {
         this.email = data.user.email;
         this.token = data.token;
       },
-      error: (error) => console.log(error.error),
+      error: (error) => {
+        if (error.status === 403 || error.status === 401) {
+          this.usersService.logout();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+      },
     });
   }
 }

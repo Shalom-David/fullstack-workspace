@@ -1,6 +1,7 @@
 import { IcartProduct } from './cart';
 
 export interface Iorder {
+  _id: string;
   customerEmail: string;
   customerCart: {
     products: IcartProduct[];
@@ -10,7 +11,7 @@ export interface Iorder {
   deliveryDate: string;
   orderDate: string;
   cardEndsWith: number;
-  status: 'confirmed' | 'rejected' | 'canceled';
+  status: 'confirmed' | 'rejected' | 'canceled' | 'shipping';
 }
 
 export interface IplaceOrder {

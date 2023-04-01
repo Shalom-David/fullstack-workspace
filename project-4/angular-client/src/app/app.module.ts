@@ -22,7 +22,10 @@ import {
   DateAdapter,
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTabsModule } from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { Platform } from '@angular/cdk/platform';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,6 +40,10 @@ import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { FooterComponent } from './footer/footer.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { AddProductComponent } from './admin-panel/add-product/add-product.component';
+import { EditProductComponent } from './admin-panel/edit-product/edit-product.component';
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +58,10 @@ import { FooterComponent } from './footer/footer.component';
     RegistrationComponent,
     UserProfileComponent,
     FooterComponent,
+    AdminPanelComponent,
+    AddProductComponent,
+    EditProductComponent,
+    OrdersComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +84,10 @@ import { FooterComponent } from './footer/footer.component';
     MatStepperModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTabsModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     DatePipe,

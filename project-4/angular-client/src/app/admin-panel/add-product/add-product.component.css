@@ -1,0 +1,46 @@
+.full-width {
+  width: 100%;
+}
+
+.action-btn {
+  background-color: #f2ad54;
+  color: black;
+  margin: 30px;
+}
+.action-btn-disabled {
+  background-color: #f2ae54a6;
+  color: black;
+  margin: 30px;
+}
+#add-product-tab {
+  touch-action: pan-y;
+}
+.form-input-group-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+  padding: 30px;
+  box-shadow: 0px 3px 3px 3px #00000077;
+}
+#add-product-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.input-container {
+  width: 400px;
+}
+#description-input {
+  height: 200px;
+  text-overflow: ellipsis;
+}
+#spinner-container {
+  display: flex;
+  justify-content: center;
+}
+@media screen and (max-width: 480px) {
+  .input-container {
+    max-width: 300px;
+  }
+}

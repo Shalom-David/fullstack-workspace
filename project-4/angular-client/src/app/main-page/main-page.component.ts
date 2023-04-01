@@ -82,7 +82,7 @@ export class MainPageComponent implements OnInit {
         verticalPosition: this.snackBarVerticalPosition,
       }
     );
-  
+
     snackBarRef.onAction().subscribe(() => {
       this.router.navigate(['checkout'], {
         replaceUrl: true,
@@ -90,7 +90,7 @@ export class MainPageComponent implements OnInit {
       });
     });
   }
-  
+
   private openLoginSnackBar() {
     const snackBarRef = this._snackBar.open(
       'Must be signed in to add items to your cart!',
@@ -102,14 +102,13 @@ export class MainPageComponent implements OnInit {
         verticalPosition: this.snackBarVerticalPosition,
       }
     );
-  
+
     snackBarRef.onAction().subscribe(() => {
       this.router.navigate(['login'], {
         replaceUrl: true,
       });
     });
   }
-  
 
   handlePageEvent(event: PageEvent) {
     if (event.pageIndex > event.previousPageIndex!) {
@@ -141,7 +140,10 @@ export class MainPageComponent implements OnInit {
                 this.token = userData.token;
               },
               error: (error) => {
-                console.error(error);
+                if (error.status === 403 || error.status === 401) {
+                  this.usersService.logout();
+                  this.router.navigate(['login'], { replaceUrl: true });
+                }
               },
             });
         }
@@ -156,9 +158,15 @@ export class MainPageComponent implements OnInit {
         customerEmail: this.user.email,
       };
 
-      this.cartService
-        .addToCart(cartData, this.token)
-        .subscribe(() => this.cartService.setCartStatus(true));
+      this.cartService.addToCart(cartData, this.token).subscribe({
+        next: () => this.cartService.setCartStatus(true),
+        error: (error) => {
+          if (error.status === 403 || error.status === 401) {
+            this.usersService.logout();
+            this.router.navigate(['login'], { replaceUrl: true });
+          }
+        },
+      });
       this.openCartSnackBar();
     } else {
       this.openLoginSnackBar();
@@ -176,20 +184,9 @@ export class MainPageComponent implements OnInit {
     this.productsService
       .getProducts(category, page, searchQuery)
       .pipe(first())
-      .subscribe({
-        next: (data) => {
-          Object.entries(data)[0][1].forEach((product: Iproduct) => {
-            product.imageData = `data:image/jpeg;base64, ${Buffer.from(
-              product.imageData
-            ).toString('base64')}`;
-            this.products.push(product);
-          });
-
-          this.maxPageCount = Object.entries(data)[1][1];
-        },
-        error: (error: any) => {
-          console.error(error);
-        },
+      .subscribe((data) => {
+        this.products = Object.entries(data)[0][1];
+        this.maxPageCount = Object.entries(data)[1][1];
       });
   }
 }

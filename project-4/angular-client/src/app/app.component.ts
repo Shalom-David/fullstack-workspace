@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsersService } from 'src/services/users.service';
 
 @Component({
@@ -14,8 +14,7 @@ export class AppComponent implements OnInit {
   };
   constructor(private usersService: UsersService) {
     const storedData = localStorage.getItem('userData');
-    console.log('hm');
-    console.log(storedData);
+
     if (storedData) {
       this.userData = JSON.parse(storedData);
       this.usersService.setUserAccessData(
@@ -27,9 +26,6 @@ export class AppComponent implements OnInit {
     }
   }
   ngOnInit() {
-    if (this.userData) {
-      console.log(this.userData.token);
-    }
     this.usersService.userAccessData$.subscribe((data) => {
       if (data.customerEmail && data.customerEmail && data.loggedIn) {
         this.userData = {
@@ -41,11 +37,9 @@ export class AppComponent implements OnInit {
       }
       if (!data.loggedIn) {
         window.removeEventListener('beforeunload', this.beforeUnloadHandler);
-        console.log('idkwtf');
       }
     });
   }
-
 
   private beforeUnloadHandler = () => {
     localStorage.setItem(

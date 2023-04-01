@@ -23,3 +23,6 @@ body {
   --mat-mdc-snack-bar-button-color: #f2ad54;
   --mdc-snackbar-container-color: #293c4e;
 }
+circle{
+  stroke :#f2ad54 !important
+}

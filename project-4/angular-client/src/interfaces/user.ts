@@ -3,7 +3,7 @@ export interface IuserDetail {
   lastName: string;
   email: string;
   billingAddress: { city: string; street: string };
-  role: 'admin' | 'user';
+  role: string
 }
 export interface IuserRegistrationDetail {
   firstName: string;
@@ -11,6 +11,13 @@ export interface IuserRegistrationDetail {
   email: string;
   password: string;
   billingAddress: { city: string; street: string };
+}
+export interface IuserUpdateDetail {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  billingAddress?: { city?: string; street?: string };
 }
 
 export interface IuserWithAccessToken {

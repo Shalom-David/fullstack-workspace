@@ -34,7 +34,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private ordersService: OrdersService,
-    private statesService: StatesService,
     private usersService: UsersService,
     private cartService: CartsService
   ) {
@@ -79,7 +78,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         this.order = data;
         this.cartService.setCartStatus(true);
       },
-      error: (error) => console.error(error.error),
+      error: (error) => {
+        if (error.status === 403 || error.status === 401) {
+          this.usersService.logout();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+      },
     });
   }
 

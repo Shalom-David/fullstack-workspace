@@ -8,7 +8,7 @@ import {
 } from '../interfaces/product'
 import { Product } from '../models/product'
 import { checkFile, fileMatcher } from '../utils'
-
+import { Buffer } from 'buffer'
 export const createProduct = async (
   doc: Iproduct,
   file: Express.Multer.File[]
@@ -17,7 +17,7 @@ export const createProduct = async (
   const [productExists] = productsList.filter(
     (product) => product.name === doc.name
   )
-  if (productExists) throw Error('product already exists')
+  if (productExists) throw Error(`product with name ${doc.name} already exists`)
   checkFile(file[0])
   const timestamp = Date.now()
   doc.imageId = timestamp.toString()
@@ -36,28 +36,37 @@ export const findProductbyId = async (id: string): Promise<Iproduct[]> => {
 }
 export const findProductByCategory = async (
   category: string,
-  pageNumber: number,
-  pageSize: number,
+  pageNumber?: number,
+  pageSize?: number,
   searchQuery?: string
 ): Promise<IpaginatedProducts> => {
-  const productsList = await Product.find(
+  console.log(category)
+  console.log(pageNumber)
+  console.log(searchQuery)
+  let productsList = Product.find(
     searchQuery
       ? { category: category, name: { $regex: searchQuery } }
       : { category: category }
   )
-    .skip((pageNumber - 1) * pageSize)
-    .limit(pageSize)
+
+  if (pageNumber && pageSize) {
+    const skipValue = (pageNumber - 1) * pageSize
+    productsList = productsList.skip(skipValue).limit(pageSize)
+  }
   const products: IproductWithImage[] = []
   const totalCount = await Product.countDocuments({ category: category })
-  for (const product of productsList) {
+  for (const product of await productsList) {
+    const image = await readFile(
+      `./images/${await fileMatcher(product.imageId)}`
+    )
     products.push({
       productId: product._id.toString(),
       name: product.name,
       category: product.category,
       price: product.price,
-      imageData: await readFile(
-        `./images/${await fileMatcher(product.imageId)}`
-      ),
+      imageData: `data:image/jpeg;base64, ${Buffer.from(image).toString(
+        'base64'
+      )}`,
       description: product.description,
     })
   }
@@ -73,26 +82,32 @@ export const findProducts = async (): Promise<Iproduct[]> => {
 }
 
 export const paginatedProducts = async (
-  pageNumber: number,
-  pageSize: number,
+  pageNumber?: number,
+  pageSize?: number,
   searchQuery?: string
 ): Promise<IpaginatedProducts> => {
-  const productsList = await Product.find(
+  let productsList = Product.find(
     searchQuery ? { name: { $regex: searchQuery } } : {}
   )
-    .skip((pageNumber - 1) * pageSize)
-    .limit(pageSize)
+
+  if (pageNumber && pageSize) {
+    const skipValue = (pageNumber - 1) * pageSize
+    productsList = productsList.skip(skipValue).limit(pageSize)
+  }
   const products: IproductWithImage[] = []
   const totalCount = await Product.countDocuments()
-  for (const product of productsList) {
+  for (const product of await productsList) {
+    const image = await readFile(
+      `./images/${await fileMatcher(product.imageId)}`
+    )
     products.push({
       productId: product._id.toString(),
       name: product.name,
       category: product.category,
       price: product.price,
-      imageData: await readFile(
-        `./images/${await fileMatcher(product.imageId)}`
-      ),
+      imageData: `data:image/jpeg;base64, ${Buffer.from(image).toString(
+        'base64'
+      )}`,
       description: product.description,
     })
   }
@@ -120,12 +135,6 @@ export const updateProduct = async (
   doc: Iproduct & { productId: string },
   file: Express.Multer.File[]
 ): Promise<Document<unknown, any, Iproduct>> => {
-  const productsList = await findProducts()
-  const [productNameExists] = productsList.filter(
-    (product) => product.name === doc.name
-  )
-  if (productNameExists)
-    throw Error(`product with name ${doc.name} already exists`)
   if (file[0]) {
     checkFile(file[0])
     const [oldProduct] = await findProductbyId(doc.productId)
